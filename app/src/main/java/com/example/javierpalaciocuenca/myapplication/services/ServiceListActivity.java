@@ -44,19 +44,6 @@ public class ServiceListActivity extends Activity {
         }
     };
 
-    private HashMap<String, Integer> imageMap = new HashMap<String, Integer>() {
-        {
-            put("Clothes Containers", R.drawable.image1);
-            put("Twitter", null);
-            put("Windows", null);
-            put("Bing", null);
-            put("Itunes", null);
-            put("Wordpress", null);
-            put("Drupal", null);
-            put("Twitter", null);
-        }
-    };
-
     private GoogleApiClient client;
     private ListView listView;
     private List<String> headers = new ArrayList<>(classMap.keySet());
@@ -67,7 +54,7 @@ public class ServiceListActivity extends Activity {
         setContentView(R.layout.activity_my);
         try {
 
-            CustomList adapter = new CustomList(ServiceListActivity.this, classMap.keySet(), imageMap);
+            CustomList adapter = new CustomList(ServiceListActivity.this, classMap);
             listView = (ListView) findViewById(R.id.listview);
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

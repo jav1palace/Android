@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ProgressBar;
 
+import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.services.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.myapplication.utilities.JSONReader;
@@ -25,16 +26,17 @@ import java.util.concurrent.ExecutionException;
 public class CitizenATMSource extends JSONResource {
 
     public CitizenATMSource() {
-
+        setIcon(R.drawable.image1);
     }
 
     public CitizenATMSource(Context context, ProgressBar progressBar) {
+        new CitizenATMSource();
         this.context = context;
         this.progressBar = progressBar;
     }
 
     public CitizenATMSource(Context context) {
-        this.context = context;
+        new CitizenATMSource(context, null);
     }
 
     @Override
