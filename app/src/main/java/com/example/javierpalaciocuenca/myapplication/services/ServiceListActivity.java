@@ -1,26 +1,27 @@
-package com.example.javierpalaciocuenca.myapplication;
+package com.example.javierpalaciocuenca.myapplication.services;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.javierpalaciocuenca.myapplication.R;
+import com.example.javierpalaciocuenca.myapplication.services.impl.CitizenATMSource;
+import com.example.javierpalaciocuenca.myapplication.ui.CustomList;
+import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
+import com.example.javierpalaciocuenca.myapplication.utilities.MapItem;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import org.json.JSONObject;
-
-import java.util.concurrent.ExecutionException;
-
-import impl.LeisureService;
-import utilities.ExceptionDialogBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class ServiceListActivity extends Activity {
@@ -29,18 +30,36 @@ public class ServiceListActivity extends Activity {
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
+
+    private HashMap<String, Class> classMap = new HashMap<String, Class>() {
+        {
+            put("Clothes Containers", CitizenATMSource.class);
+            put("Twitter", null);
+            put("Windows", null);
+            put("Bing", null);
+            put("Itunes", null);
+            put("Wordpress", null);
+            put("Drupal", null);
+            put("Twitter", null);
+        }
+    };
+
+    private HashMap<String, Integer> imageMap = new HashMap<String, Integer>() {
+        {
+            put("Clothes Containers", R.drawable.image1);
+            put("Twitter", null);
+            put("Windows", null);
+            put("Bing", null);
+            put("Itunes", null);
+            put("Wordpress", null);
+            put("Drupal", null);
+            put("Twitter", null);
+        }
+    };
+
     private GoogleApiClient client;
     private ListView listView;
-
-    String[] web = {
-            "Contenedores de ropa",
-            "Twitter",
-            "Windows",
-            "Bing",
-            "Itunes",
-            "Wordpress",
-            "Drupal"
-    };
+    private List<String> headers = new ArrayList<>(classMap.keySet());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,27 +67,34 @@ public class ServiceListActivity extends Activity {
         setContentView(R.layout.activity_my);
         try {
 
-            CustomList adapter = new CustomList(ServiceListActivity.this, web);
+            CustomList adapter = new CustomList(ServiceListActivity.this, classMap.keySet(), imageMap);
             listView = (ListView) findViewById(R.id.listview);
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    //TODO: Create a factory that creates the object or maybe create a naming code like in MyJet with the upserts
                     try {
-                        //TODO: Extract this logic to an strategy pattern with all the available items
-                        //TODO: Create a factory that creates the object or maybe create a naming code like in MyJet with the upserts
-                        AsyncTask<String, Void, JSONObject> asyncTask = LeisureService.getCitizenATM(ServiceListActivity.this);
+                        Class usableClass = classMap.get(headers.get(position));
+                        if (usableClass != null) {
+                            JSONResource jsonResource = (JSONResource) classMap.get(headers.get(position)).newInstance();
+                            jsonResource.setContext(ServiceListActivity.this);
 
-                        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                        intent.putExtra("json", asyncTask.get().toString());
+                            ArrayList<MapItem> mapItems = new ArrayList<>(jsonResource.execute());
 
-                        startActivity(intent);
+                            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                            intent.putExtra("mapItems", mapItems);
 
-                        Toast.makeText(ServiceListActivity.this, "You Clicked at " + web[+position], Toast.LENGTH_SHORT).show();
-                    } catch (InterruptedException e) {
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(ServiceListActivity.this, "The "+ headers.get(+position) + " is not available yet ", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (InstantiationException e) {
                         ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
-                    } catch (ExecutionException e) {
+                    } catch (IllegalAccessException e) {
                         ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
                     }
                 }
@@ -77,7 +103,7 @@ public class ServiceListActivity extends Activity {
             // ATTENTION: This was auto-generated to implement the App Indexing API.
             // See https://g.co/AppIndexing/AndroidStudio for more information.
             client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-            throw new Exception("TEST");
+            //throw new Exception("TEST");
         }catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
         }

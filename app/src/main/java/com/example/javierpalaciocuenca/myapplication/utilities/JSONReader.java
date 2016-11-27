@@ -1,14 +1,10 @@
-package utilities;
+package com.example.javierpalaciocuenca.myapplication.utilities;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
-
-import com.example.javierpalaciocuenca.myapplication.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,13 +27,16 @@ public class JSONReader extends AsyncTask<String, Void, JSONObject> {
     private ProgressBar spinner;
     private Context context;
     private AlertDialog alertDialog;
-    public JSONReader(ProgressBar progressBar){
+
+    public JSONReader(ProgressBar progressBar) {
         this.spinner = progressBar;
     }
-    public JSONReader(Context context){
+
+    public JSONReader(Context context) {
         this.context = context;
     }
-    public JSONReader(ProgressBar progressBar, Context context){
+
+    public JSONReader(ProgressBar progressBar, Context context) {
         this.context = context;
         this.spinner = progressBar;
     }
@@ -51,7 +50,7 @@ public class JSONReader extends AsyncTask<String, Void, JSONObject> {
         return formatUnicodeJSON(sb.toString());
     }
 
-    private static String formatUnicodeJSON(String json){
+    private static String formatUnicodeJSON(String json) {
         Pattern pattern = Pattern.compile("\\&#([0-9]+);"); //The regex gets the $#123; unicode value
         Matcher matcher = pattern.matcher(json);
         while (matcher.find()) {
@@ -76,9 +75,9 @@ public class JSONReader extends AsyncTask<String, Void, JSONObject> {
                 JSONObject json = new JSONObject(jsonText);
 
                 return json;
-            }  catch (JSONException e) {
+            } catch (JSONException e) {
                 ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
-            }  finally {
+            } finally {
                 inputSteam.close();
             }
         } catch (MalformedURLException e) {
@@ -92,15 +91,15 @@ public class JSONReader extends AsyncTask<String, Void, JSONObject> {
 
     //TODO: Extract this out of here?
     @Override
-    protected void onPostExecute (JSONObject result){
-        if(spinner != null){
+    protected void onPostExecute(JSONObject result) {
+        if (spinner != null) {
             spinner.setVisibility(View.GONE);
         }
     }
 
     @Override
     protected void onPreExecute() {
-        if(spinner != null){
+        if (spinner != null) {
             spinner.setVisibility(View.VISIBLE);
         }
     }
