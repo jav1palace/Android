@@ -1,13 +1,15 @@
-package com.example.javierpalaciocuenca.myapplication;
+package com.example.javierpalaciocuenca.myapplication.services;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.javierpalaciocuenca.myapplication.R;
+import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
+import com.example.javierpalaciocuenca.myapplication.utilities.MapItem;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -17,26 +19,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import utilities.ExceptionDialogBuilder;
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private JSONObject jsonObject;
     private List<Marker> markers;
+    private ArrayList<MapItem> mapItems;
+    private Integer marker;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -52,6 +49,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        /* Receive the intent */
+        Intent intent = getIntent();
+        mapItems = intent.getParcelableArrayListExtra("mapItems");
+        marker = intent.getIntExtra("marker", 0);
+
+        /* Init the marker list */
         markers = new ArrayList<>();
 
         Button resetButton = (Button) findViewById(R.id.resetButton);
@@ -86,30 +90,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         try {
+            MarkerOptions markerOptions;
+
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            JSONObject jsonItem;
-            LatLng markerLatLong;
-            JSONArray jsonArray = jsonObject.getJSONObject("contenedorropas").getJSONArray("contenedorropa");
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonItem = jsonArray.getJSONObject(i);
+            for (MapItem mapItem : mapItems) {
+                markerOptions = new MarkerOptions();
+                markerOptions.position(mapItem.getLatLng());
+                markerOptions.title(mapItem.getTitle());
 
-                markerLatLong = new LatLng(jsonItem.getDouble("latitud"), jsonItem.getDouble("longitud"));
-                markers.add(mMap.addMarker(new MarkerOptions().position(markerLatLong).title(jsonItem.getString("lugar"))));
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
 
-                builder.include(markerLatLong);
+                markers.add(mMap.addMarker(markerOptions));
+
+                builder.include(mapItem.getLatLng());
             }
 
-            LatLngBounds bounds = builder.build();
-            int padding = 0; // offset from edges of the map in pixels
-            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            /* Move the camera to take all the markers in case there's any */
+            if (markers.size() > 0) {
+                LatLngBounds bounds = builder.build();
+                int width = getResources().getDisplayMetrics().widthPixels;
+                int height = getResources().getDisplayMetrics().heightPixels;
+                int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
 
-            mMap.moveCamera(cu);
-        } catch (JSONException e) {
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding); //offset from edges of the map in pixels
+                mMap.moveCamera(cu);
+            }
+        } catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();
         }
+
     }
 
     /**

@@ -1,4 +1,4 @@
-package utilities;
+package com.example.javierpalaciocuenca.myapplication.utilities;
 
 import android.app.AlertDialog;
 import android.content.Context;
