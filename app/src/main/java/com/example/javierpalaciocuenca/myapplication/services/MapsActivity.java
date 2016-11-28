@@ -33,7 +33,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private List<Marker> markers;
     private ArrayList<MapItem> mapItems;
-    private Integer marker;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -53,11 +53,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /* Receive the intent */
         Intent intent = getIntent();
         mapItems = intent.getParcelableArrayListExtra("mapItems");
-        marker = intent.getIntExtra("marker", 0);
 
         /* Init the marker list */
         markers = new ArrayList<>();
 
+         /* Init the reset button */
         Button resetButton = (Button) findViewById(R.id.resetButton);
         initResetButton(resetButton);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
