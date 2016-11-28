@@ -35,7 +35,7 @@ public class CustomList extends ArrayAdapter<String>{
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        Integer image = null;
+        Integer icon = null;
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.single_item, null, true);
 
@@ -44,12 +44,12 @@ public class CustomList extends ArrayAdapter<String>{
             Class classToInit = imageMap.get(items.get(position));
             if (classToInit != null) {
                 JSONResource jsonResource = (JSONResource) classToInit.newInstance();
-                image = jsonResource.getIcon();
+                icon = jsonResource.getIcon();
             }
 
             /* Set the default image in case it's not implemented */
-            if (image != null) {
-                imageView.setImageResource(image);
+            if (icon != null) {
+                imageView.setImageResource(icon);
             } else {
                 imageView.setImageResource(R.drawable.empty);
             }

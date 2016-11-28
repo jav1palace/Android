@@ -14,15 +14,23 @@ import java.util.List;
 public abstract class JSONResource {
     protected Context context;
     protected ProgressBar progressBar;
-    protected Integer icon;
+    protected Integer icon, marker;
     protected abstract List<MapItem> execute();
 
-    public Integer getIcon() {
-        return icon;
+    public Integer getMarker() {
+        return marker;
     }
 
     public void setIcon(Integer icon) {
         this.icon = icon;
+    }
+
+    public void setMarker(Integer marker) {
+        this.marker = marker;
+    }
+
+    public Integer getIcon() {
+        return icon;
     }
 
     public Context getContext() {

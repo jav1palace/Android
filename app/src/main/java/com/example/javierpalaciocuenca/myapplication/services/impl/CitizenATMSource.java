@@ -27,6 +27,7 @@ public class CitizenATMSource extends JSONResource {
 
     public CitizenATMSource() {
         setIcon(R.drawable.image1);
+        setMarker(R.drawable.marker1);
     }
 
     public CitizenATMSource(Context context, ProgressBar progressBar) {
@@ -59,7 +60,7 @@ public class CitizenATMSource extends JSONResource {
 
                 latLng = new LatLng(jsonObject.getDouble("latitud"), jsonObject.getDouble("longitud"));
                 title = jsonObject.getString("lugar");
-                mapItem = new MapItem(title, latLng);
+                mapItem = new MapItem(title, latLng, marker);
                 mapItems.add(mapItem);
             }
         } catch (InterruptedException e) {
@@ -71,6 +72,5 @@ public class CitizenATMSource extends JSONResource {
         }
 
         return mapItems;
-
     }
 }

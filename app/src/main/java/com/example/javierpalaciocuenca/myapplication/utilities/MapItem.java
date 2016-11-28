@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapItem implements Parcelable {
     public static final Parcelable.Creator<MapItem> CREATOR = new Parcelable.Creator<MapItem>() {
         public MapItem createFromParcel(Parcel in) {
-            return new MapItem(in.readString(), new LatLng(in.readDouble(), in.readDouble()));
+            return new MapItem(in.readString(), new LatLng(in.readDouble(), in.readDouble()), in.readInt());
         }
 
         public MapItem[] newArray(int size) {
@@ -22,14 +22,24 @@ public class MapItem implements Parcelable {
 
     private LatLng latLng;
     private String title;
+    private Integer marker;
 
-    public MapItem(String title, LatLng latLng) {
+    public MapItem(String title, LatLng latLng, Integer marker) {
         this.title = title;
         this.latLng = latLng;
+        this.marker = marker;
     }
 
     public LatLng getLatLng() {
         return latLng;
+    }
+
+    public Integer getMarker() {
+        return marker;
+    }
+
+    public void setMarker(Integer marker) {
+        this.marker = marker;
     }
 
     public void setLatLng(LatLng latLng) {
@@ -54,5 +64,6 @@ public class MapItem implements Parcelable {
         out.writeString(title);
         out.writeDouble(latLng.latitude);
         out.writeDouble(latLng.longitude);
+        out.writeInt(marker);
     }
 }

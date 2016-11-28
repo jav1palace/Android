@@ -73,6 +73,7 @@ public class ServiceListActivity extends Activity {
 
                             Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                             intent.putExtra("mapItems", mapItems);
+                            intent.putExtra("marker", jsonResource.getMarker());
 
                             startActivity(intent);
                         } else {
