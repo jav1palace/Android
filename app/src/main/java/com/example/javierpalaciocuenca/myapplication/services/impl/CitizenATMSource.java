@@ -27,7 +27,7 @@ public class CitizenATMSource extends JSONResource {
 
     public CitizenATMSource() {
         setIcon(R.drawable.image1);
-        setMarker(R.drawable.marker1);
+        setMarker(R.drawable.marker1); // Size has to be 25x25
     }
 
     public CitizenATMSource(Context context, ProgressBar progressBar) {
