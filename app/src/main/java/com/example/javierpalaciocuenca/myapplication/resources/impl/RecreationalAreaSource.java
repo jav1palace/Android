@@ -3,7 +3,6 @@ package com.example.javierpalaciocuenca.myapplication.resources.impl;
 import android.app.ProgressDialog;
 import android.content.Context;
 
-import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 
@@ -32,6 +31,6 @@ public class RecreationalAreaSource extends JSONResource {
 
     @Override
     public List<MapItem> execute() {
-        return standardExecute("http://datos.gijon.es/doc/medio-ambiente/areas-recreativas.json");
+        return execute("http://datos.gijon.es/doc/medio-ambiente/areas-recreativas.json");
     }
 }
