@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.services.impl.CitizenATMSource;
+import com.example.javierpalaciocuenca.myapplication.services.impl.BowlingSource;
 import com.example.javierpalaciocuenca.myapplication.ui.CustomList;
 import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.myapplication.utilities.MapItem;
@@ -35,7 +36,7 @@ public class ServiceListActivity extends Activity {
     private HashMap<String, Class> classMap = new HashMap<String, Class>() {
         {
             put("Clothes Containers", CitizenATMSource.class);
-            put("Twitter", null);
+            put("Bowling", BowlingSource.class);
             put("Windows", null);
             put("Bing", null);
             put("Itunes", null);
@@ -54,7 +55,7 @@ public class ServiceListActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        setContentView(R.layout.main_activity);
         try {
 
             if (this.adapter == null) {

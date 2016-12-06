@@ -3,6 +3,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <!--List View with all the resources offered-->
     <ListView
         android:id="@+id/listview"
         android:layout_width="fill_parent"

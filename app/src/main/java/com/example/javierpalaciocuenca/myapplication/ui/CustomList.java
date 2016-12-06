@@ -63,7 +63,6 @@ public class CustomList extends ArrayAdapter<String>{
             ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         }
 
-
         return rowView;
     }
 }

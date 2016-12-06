@@ -95,10 +95,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
+            String url;
             for (MapItem mapItem : mapItems) {
                 markerOptions = new MarkerOptions();
                 markerOptions.position(mapItem.getLatLng());
                 markerOptions.title(mapItem.getTitle());
+
+                url = mapItem.getUrl();
+                if (url != null) {
+                    markerOptions.snippet(url);
+                }
 
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
 
@@ -116,6 +122,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding); //offset from edges of the map in pixels
                 this.mMap.moveCamera(cu);
+
+
             }
         } catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();

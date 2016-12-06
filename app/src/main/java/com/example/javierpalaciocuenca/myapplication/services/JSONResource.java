@@ -17,16 +17,21 @@ public abstract class JSONResource {
     protected Integer icon, marker;
     protected abstract List<MapItem> execute();
 
-    public Integer getMarker() {
-        return marker;
-    }
 
     public void setIcon(Integer icon) {
         this.icon = icon;
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public void setMarker(Integer marker) {
         this.marker = marker;
+    }
+
+    public void setProgressBar(ProgressDialog progressDialog) {
+        this.progressDialog = progressDialog;
     }
 
     public Integer getIcon() {
@@ -37,15 +42,13 @@ public abstract class JSONResource {
         return context;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
+    public Integer getMarker() {
+        return marker;
     }
 
     public ProgressDialog getProgressBar() {
         return progressDialog;
     }
 
-    public void setProgressBar(ProgressDialog progressDialog) {
-        this.progressDialog = progressDialog;
-    }
+
 }

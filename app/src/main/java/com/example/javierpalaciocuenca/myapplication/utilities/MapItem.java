@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapItem implements Parcelable {
     public static final Parcelable.Creator<MapItem> CREATOR = new Parcelable.Creator<MapItem>() {
         public MapItem createFromParcel(Parcel in) {
-            return new MapItem(in.readString(), new LatLng(in.readDouble(), in.readDouble()), in.readInt());
+            return new MapItem(in.readString(), new LatLng(in.readDouble(), in.readDouble()), in.readInt(), in.readString());
         }
 
         public MapItem[] newArray(int size) {
@@ -21,13 +21,18 @@ public class MapItem implements Parcelable {
     };
 
     private LatLng latLng;
-    private String title;
+    private String title, url;
     private Integer marker;
 
-    public MapItem(String title, LatLng latLng, Integer marker) {
+    public MapItem(String title, LatLng latLng, Integer marker){
         this.title = title;
         this.latLng = latLng;
         this.marker = marker;
+    }
+
+    public MapItem(String title, LatLng latLng, Integer marker, String url) {
+        this(title, latLng, marker);
+        this.url = url;
     }
 
     public LatLng getLatLng() {
@@ -38,6 +43,14 @@ public class MapItem implements Parcelable {
         return marker;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
     public void setMarker(Integer marker) {
         this.marker = marker;
     }
@@ -46,8 +59,8 @@ public class MapItem implements Parcelable {
         this.latLng = latLng;
     }
 
-    public String getTitle() {
-        return title;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public void setTitle(String title) {
@@ -65,5 +78,6 @@ public class MapItem implements Parcelable {
         out.writeDouble(latLng.latitude);
         out.writeDouble(latLng.longitude);
         out.writeInt(marker);
+        out.writeString(url);
     }
 }

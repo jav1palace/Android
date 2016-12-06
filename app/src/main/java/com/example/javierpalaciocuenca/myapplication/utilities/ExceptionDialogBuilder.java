@@ -17,7 +17,7 @@ public class ExceptionDialogBuilder {
         try{
             alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle("Exception");
-            alertDialog.setIcon(R.drawable.image1);
+            alertDialog.setIcon(R.drawable.atm_citizen_icon);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setMessage(message);
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -32,6 +32,5 @@ public class ExceptionDialogBuilder {
         }
 
         return alertDialog;
-
     }
 }
