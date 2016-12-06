@@ -104,14 +104,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (latLng != null) {
                     markerOptions.position(latLng);
                     markerOptions.title(mapItem.getTitle());
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
 
                     url = mapItem.getUrl();
                     if (url != null) {
                         markerOptions.snippet(url);
                     }
-
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
-
+                    
                     this.markers.add(mMap.addMarker(markerOptions));
 
                     builder.include(mapItem.getLatLng());

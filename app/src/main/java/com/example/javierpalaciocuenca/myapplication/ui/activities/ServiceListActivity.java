@@ -13,11 +13,12 @@ import android.widget.Toast;
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.ATMSource;
-import com.example.javierpalaciocuenca.myapplication.resources.impl.CitizenATMSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.BowlingSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.CitizenATMSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.RecreationalAreaSource;
+import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 import com.example.javierpalaciocuenca.myapplication.ui.custom.CustomList;
 import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
-import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -39,8 +40,8 @@ public class ServiceListActivity extends Activity {
         {
             put("Clothes Containers", CitizenATMSource.class);
             put("Bowling", BowlingSource.class);
-            put("ATM", ATMSource.class);
-            put("Bing", null);
+            put("ATMs", ATMSource.class);
+            put("Recreational Areas", RecreationalAreaSource.class);
             put("Itunes", null);
             put("Wordpress", null);
             put("Drupal", null);
@@ -100,6 +101,7 @@ public class ServiceListActivity extends Activity {
                     } catch (IllegalAccessException e) {
                         ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
                     }
+
                 }
             });
 

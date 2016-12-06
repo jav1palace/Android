@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.myapplication.utils.JSONReader;
@@ -24,7 +25,8 @@ import java.util.concurrent.ExecutionException;
 public abstract class JSONResource {
     protected Context context;
     protected ProgressDialog progressDialog;
-    protected Integer icon, marker;
+    protected Integer icon = R.drawable.default_icon;
+    protected Integer marker = R.drawable.default_marker;
 
     public abstract List<MapItem> execute();
 
