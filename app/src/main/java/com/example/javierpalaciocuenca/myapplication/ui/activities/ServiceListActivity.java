@@ -14,6 +14,7 @@ import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.ATMSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.BowlingSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.CampingSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CasinoSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CitizenATMSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.RecreationalAreaSource;
@@ -44,7 +45,7 @@ public class ServiceListActivity extends Activity {
             put("ATMs", ATMSource.class);
             put("Recreational Areas", RecreationalAreaSource.class);
             put("Casinos", CasinoSource.class);
-            put("Wordpress", null);
+            put("Campings", CampingSource.class);
             put("Drupal", null);
             put("Twitter", null);
         }
