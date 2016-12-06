@@ -1,6 +1,7 @@
 package com.example.javierpalaciocuenca.myapplication.services;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,6 +47,8 @@ public class ServiceListActivity extends Activity {
 
     private GoogleApiClient client;
     private ListView listView;
+    private CustomList adapter;
+    private ProgressDialog progressDialog;
     private List<String> headers = new ArrayList<>(classMap.keySet());
 
     @Override
@@ -54,10 +57,19 @@ public class ServiceListActivity extends Activity {
         setContentView(R.layout.activity_my);
         try {
 
-            CustomList adapter = new CustomList(ServiceListActivity.this, classMap);
-            listView = (ListView) findViewById(R.id.listview);
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            if (this.adapter == null) {
+                this.adapter = new CustomList(ServiceListActivity.this, classMap);
+            }
+
+            if (this.progressDialog == null) {
+                this.progressDialog = new ProgressDialog(ServiceListActivity.this);
+                this.progressDialog.setTitle("Connecting");
+                this.progressDialog.setMessage("Resource is being downloaded and processed");
+            }
+
+            this.listView = (ListView) findViewById(R.id.listview);
+            this.listView.setAdapter(this.adapter);
+            this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -68,12 +80,12 @@ public class ServiceListActivity extends Activity {
                         if (usableClass != null) {
                             JSONResource jsonResource = (JSONResource) classMap.get(headers.get(position)).newInstance();
                             jsonResource.setContext(ServiceListActivity.this);
+                            jsonResource.setProgressBar(progressDialog);
 
                             ArrayList<MapItem> mapItems = new ArrayList<>(jsonResource.execute());
 
                             Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                             intent.putExtra("mapItems", mapItems);
-                            intent.putExtra("marker", jsonResource.getMarker());
 
                             startActivity(intent);
                         } else {
@@ -91,7 +103,7 @@ public class ServiceListActivity extends Activity {
             // ATTENTION: This was auto-generated to implement the App Indexing API.
             // See https://g.co/AppIndexing/AndroidStudio for more information.
             client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-            //throw new Exception("TEST");
+
         }catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
         }
@@ -114,12 +126,22 @@ public class ServiceListActivity extends Activity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        //Hides the progress dialog anytime coming from another activity
+        if (this.progressDialog != null && this.progressDialog.isShowing()) {
+            this.progressDialog.dismiss();
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
+        this.client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
@@ -130,6 +152,6 @@ public class ServiceListActivity extends Activity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
+        this.client.disconnect();
     }
 }

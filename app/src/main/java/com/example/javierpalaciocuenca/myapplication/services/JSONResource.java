@@ -1,7 +1,7 @@
 package com.example.javierpalaciocuenca.myapplication.services;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.widget.ProgressBar;
 
 import com.example.javierpalaciocuenca.myapplication.utilities.MapItem;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class JSONResource {
     protected Context context;
-    protected ProgressBar progressBar;
+    protected ProgressDialog progressDialog;
     protected Integer icon, marker;
     protected abstract List<MapItem> execute();
 
@@ -41,11 +41,11 @@ public abstract class JSONResource {
         this.context = context;
     }
 
-    public ProgressBar getProgressBar() {
-        return progressBar;
+    public ProgressDialog getProgressBar() {
+        return progressDialog;
     }
 
-    public void setProgressBar(ProgressBar progressBar) {
-        this.progressBar = progressBar;
+    public void setProgressBar(ProgressDialog progressDialog) {
+        this.progressDialog = progressDialog;
     }
 }

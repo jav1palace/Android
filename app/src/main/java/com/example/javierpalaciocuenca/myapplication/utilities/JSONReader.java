@@ -1,10 +1,8 @@
 package com.example.javierpalaciocuenca.myapplication.utilities;
 
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,21 +22,16 @@ import java.util.regex.Pattern;
  * Created by javierpalaciocuenca on 14/10/2016.
  */
 public class JSONReader extends AsyncTask<String, Void, JSONObject> {
-    private ProgressBar spinner;
+    private ProgressDialog progressDialog;
     private Context context;
-    private AlertDialog alertDialog;
 
-    public JSONReader(ProgressBar progressBar) {
-        this.spinner = progressBar;
+    public JSONReader(Context context, ProgressDialog progressDialog) {
+        this.context = context;
+        this.progressDialog = progressDialog;
     }
 
     public JSONReader(Context context) {
         this.context = context;
-    }
-
-    public JSONReader(ProgressBar progressBar, Context context) {
-        this.context = context;
-        this.spinner = progressBar;
     }
 
     private static String readAll(Reader rd) throws IOException {
@@ -76,31 +69,25 @@ public class JSONReader extends AsyncTask<String, Void, JSONObject> {
 
                 return json;
             } catch (JSONException e) {
-                ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+                ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
             } finally {
                 inputSteam.close();
             }
         } catch (MalformedURLException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         } catch (IOException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
+        } catch (Exception e) {
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         }
 
         return null;
     }
 
-    //TODO: Extract this out of here?
-    @Override
-    protected void onPostExecute(JSONObject result) {
-        if (spinner != null) {
-            spinner.setVisibility(View.GONE);
-        }
-    }
-
     @Override
     protected void onPreExecute() {
-        if (spinner != null) {
-            spinner.setVisibility(View.VISIBLE);
+        if (this.progressDialog != null) {
+            this.progressDialog.show();
         }
     }
 }

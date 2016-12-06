@@ -36,12 +36,12 @@ public class CustomList extends ArrayAdapter<String>{
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         Integer icon = null;
-        LayoutInflater inflater = context.getLayoutInflater();
+        LayoutInflater inflater = this.context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.single_item, null, true);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         try {
-            Class classToInit = imageMap.get(items.get(position));
+            Class classToInit = this.imageMap.get(items.get(position));
             if (classToInit != null) {
                 JSONResource jsonResource = (JSONResource) classToInit.newInstance();
                 icon = jsonResource.getIcon();
@@ -55,12 +55,12 @@ public class CustomList extends ArrayAdapter<String>{
             }
 
             TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-            txtTitle.setText(items.get(position));
+            txtTitle.setText(this.items.get(position));
 
         } catch (InstantiationException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         } catch (IllegalAccessException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         }
 
 
