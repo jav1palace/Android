@@ -108,7 +108,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     url = mapItem.getUrl();
                     if (url != null) {
-                        markerOptions.snippet(url);
+                        //Hide URL temporary
+                        //markerOptions.snippet(url);
                     }
                     
                     this.markers.add(mMap.addMarker(markerOptions));
