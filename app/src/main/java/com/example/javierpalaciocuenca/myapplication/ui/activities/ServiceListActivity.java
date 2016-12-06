@@ -1,4 +1,4 @@
-package com.example.javierpalaciocuenca.myapplication.services;
+package com.example.javierpalaciocuenca.myapplication.ui.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -11,10 +11,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.javierpalaciocuenca.myapplication.R;
-import com.example.javierpalaciocuenca.myapplication.services.impl.CitizenATMSource;
-import com.example.javierpalaciocuenca.myapplication.ui.CustomList;
-import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
-import com.example.javierpalaciocuenca.myapplication.utilities.MapItem;
+import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.ATMSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.BowlingSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.CasinoSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.CitizenATMSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.RecreationalAreaSource;
+import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.ui.custom.CustomList;
+import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -35,10 +40,10 @@ public class ServiceListActivity extends Activity {
     private HashMap<String, Class> classMap = new HashMap<String, Class>() {
         {
             put("Clothes Containers", CitizenATMSource.class);
-            put("Twitter", null);
-            put("Windows", null);
-            put("Bing", null);
-            put("Itunes", null);
+            put("Bowling", BowlingSource.class);
+            put("ATMs", ATMSource.class);
+            put("Recreational Areas", RecreationalAreaSource.class);
+            put("Casinos", CasinoSource.class);
             put("Wordpress", null);
             put("Drupal", null);
             put("Twitter", null);
@@ -54,7 +59,7 @@ public class ServiceListActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        setContentView(R.layout.main_activity);
         try {
 
             if (this.adapter == null) {
@@ -80,7 +85,7 @@ public class ServiceListActivity extends Activity {
                         if (usableClass != null) {
                             JSONResource jsonResource = (JSONResource) classMap.get(headers.get(position)).newInstance();
                             jsonResource.setContext(ServiceListActivity.this);
-                            jsonResource.setProgressBar(progressDialog);
+                            jsonResource.setProgressDialog(progressDialog);
 
                             ArrayList<MapItem> mapItems = new ArrayList<>(jsonResource.execute());
 
@@ -97,6 +102,7 @@ public class ServiceListActivity extends Activity {
                     } catch (IllegalAccessException e) {
                         ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
                     }
+
                 }
             });
 

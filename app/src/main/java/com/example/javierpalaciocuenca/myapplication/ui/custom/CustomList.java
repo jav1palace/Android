@@ -1,4 +1,4 @@
-package com.example.javierpalaciocuenca.myapplication.ui;
+package com.example.javierpalaciocuenca.myapplication.ui.custom;
 
 /**
  * Created by javierpalaciocuenca on 16/10/2016.
@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.javierpalaciocuenca.myapplication.R;
-import com.example.javierpalaciocuenca.myapplication.services.JSONResource;
-import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
+import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
+import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +62,6 @@ public class CustomList extends ArrayAdapter<String>{
         } catch (IllegalAccessException e) {
             ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         }
-
 
         return rowView;
     }

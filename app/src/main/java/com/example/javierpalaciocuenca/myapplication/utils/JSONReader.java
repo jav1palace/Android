@@ -1,4 +1,4 @@
-package com.example.javierpalaciocuenca.myapplication.utilities;
+package com.example.javierpalaciocuenca.myapplication.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
