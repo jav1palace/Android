@@ -13,24 +13,24 @@ import java.util.List;
  * Created by javierpalaciocuenca on 27/11/2016.
  */
 
-public class CasinoSource extends JSONResource {
+public class CampingSource extends JSONResource {
 
-    public CasinoSource() {
+    public CampingSource() {
 
     }
 
-    public CasinoSource(Context context, ProgressDialog progressDialog) {
-        new CasinoSource();
+    public CampingSource(Context context, ProgressDialog progressDialog) {
+        new CampingSource();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
-    public CasinoSource(Context context) {
-        new CasinoSource(context, null);
+    public CampingSource(Context context) {
+        new CampingSource(context, null);
     }
 
     @Override
     public List<MapItem> execute() {
-        return standardExecute("http://datos.gijon.es/doc/turismo/casinos.json");
+        return standardExecute("http://datos.gijon.es/doc/turismo/camping.json");
     }
 }
