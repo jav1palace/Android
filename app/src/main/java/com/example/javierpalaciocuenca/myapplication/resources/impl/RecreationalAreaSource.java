@@ -16,7 +16,8 @@ import java.util.List;
 public class RecreationalAreaSource extends JSONResource {
 
     public RecreationalAreaSource() {
-
+        //setIcon(R.drawable.default_icon);
+        //setMarker(R.drawable.default_marker); // Size has to be 25x25
     }
 
     public RecreationalAreaSource(Context context, ProgressDialog progressDialog) {

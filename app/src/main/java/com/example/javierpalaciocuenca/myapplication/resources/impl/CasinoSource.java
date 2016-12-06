@@ -16,7 +16,8 @@ import java.util.List;
 public class CasinoSource extends JSONResource {
 
     public CasinoSource() {
-
+        //setIcon(R.drawable.atm_icon);
+        //setMarker(R.drawable.atm_marker); // Size has to be 25x25
     }
 
     public CasinoSource(Context context, ProgressDialog progressDialog) {
