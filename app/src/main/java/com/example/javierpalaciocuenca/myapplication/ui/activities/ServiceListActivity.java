@@ -17,6 +17,7 @@ import com.example.javierpalaciocuenca.myapplication.resources.impl.BowlingSourc
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CampingSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CasinoSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CitizenATMSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.GolfSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.RecreationalAreaSource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 import com.example.javierpalaciocuenca.myapplication.ui.custom.CustomList;
@@ -46,6 +47,7 @@ public class ServiceListActivity extends Activity {
             put("Recreational Areas", RecreationalAreaSource.class);
             put("Casinos", CasinoSource.class);
             put("Campings", CampingSource.class);
+            put("Golf", GolfSource.class);
             put("Drupal", null);
             put("Twitter", null);
         }
