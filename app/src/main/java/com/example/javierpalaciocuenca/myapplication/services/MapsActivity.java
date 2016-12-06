@@ -52,17 +52,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /* Receive the intent */
         Intent intent = getIntent();
-        mapItems = intent.getParcelableArrayListExtra("mapItems");
+        this.mapItems = intent.getParcelableArrayListExtra("mapItems");
 
         /* Init the marker list */
-        markers = new ArrayList<>();
+        this.markers = new ArrayList<>();
 
          /* Init the reset button */
         Button resetButton = (Button) findViewById(R.id.resetButton);
         initResetButton(resetButton);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        this.client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void initResetButton(Button resetButton) {
@@ -89,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.mMap = googleMap;
         try {
             MarkerOptions markerOptions;
 
@@ -102,20 +102,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
 
-                markers.add(mMap.addMarker(markerOptions));
+                this.markers.add(mMap.addMarker(markerOptions));
 
                 builder.include(mapItem.getLatLng());
             }
 
             /* Move the camera to take all the markers in case there's any */
-            if (markers.size() > 0) {
+            if (this.markers.size() > 0) {
                 LatLngBounds bounds = builder.build();
                 int width = getResources().getDisplayMetrics().widthPixels;
                 int height = getResources().getDisplayMetrics().heightPixels;
                 int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
 
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding); //offset from edges of the map in pixels
-                mMap.moveCamera(cu);
+                this.mMap.moveCamera(cu);
             }
         } catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();
@@ -145,7 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
+        this.client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
@@ -156,6 +156,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
+        this.client.disconnect();
     }
 }

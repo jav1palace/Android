@@ -57,19 +57,19 @@ public class ServiceListActivity extends Activity {
         setContentView(R.layout.activity_my);
         try {
 
-            if (adapter == null) {
-                adapter = new CustomList(ServiceListActivity.this, classMap);
+            if (this.adapter == null) {
+                this.adapter = new CustomList(ServiceListActivity.this, classMap);
             }
 
-            if (progressDialog == null) {
-                progressDialog = new ProgressDialog(ServiceListActivity.this);
-                progressDialog.setTitle("Connecting");
-                progressDialog.setMessage("Resource is being downloaded and processed");
+            if (this.progressDialog == null) {
+                this.progressDialog = new ProgressDialog(ServiceListActivity.this);
+                this.progressDialog.setTitle("Connecting");
+                this.progressDialog.setMessage("Resource is being downloaded and processed");
             }
 
-            listView = (ListView) findViewById(R.id.listview);
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            this.listView = (ListView) findViewById(R.id.listview);
+            this.listView.setAdapter(this.adapter);
+            this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -130,8 +130,8 @@ public class ServiceListActivity extends Activity {
         super.onResume();
 
         //Hides the progress dialog anytime coming from another activity
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+        if (this.progressDialog != null && this.progressDialog.isShowing()) {
+            this.progressDialog.dismiss();
         }
     }
 
@@ -141,7 +141,7 @@ public class ServiceListActivity extends Activity {
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
+        this.client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
@@ -152,6 +152,6 @@ public class ServiceListActivity extends Activity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
+        this.client.disconnect();
     }
 }

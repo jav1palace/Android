@@ -46,7 +46,7 @@ public class CitizenATMSource extends JSONResource {
         JSONObject jsonObject;
         List<MapItem> mapItems = new ArrayList<>();
 
-        AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(context, progressDialog).execute("http://opendata.gijon.es/descargar.php?id=7&tipo=JSON");
+        AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(this.context, this.progressDialog).execute("http://opendata.gijon.es/descargar.php?id=7&tipo=JSON");
 
         try {
             LatLng latLng;
@@ -60,15 +60,15 @@ public class CitizenATMSource extends JSONResource {
 
                 latLng = new LatLng(jsonObject.getDouble("latitud"), jsonObject.getDouble("longitud"));
                 title = jsonObject.getString("lugar");
-                mapItem = new MapItem(title, latLng, marker);
+                mapItem = new MapItem(title, latLng, this.marker);
                 mapItems.add(mapItem);
             }
         } catch (InterruptedException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         } catch (ExecutionException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         } catch (JSONException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         }
 
         return mapItems;

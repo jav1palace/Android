@@ -31,10 +31,7 @@ public class ExceptionDialogBuilder {
             e.printStackTrace();
         }
 
-
         return alertDialog;
 
     }
-
-
 }

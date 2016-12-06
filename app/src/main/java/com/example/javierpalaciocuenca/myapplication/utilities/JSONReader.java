@@ -69,16 +69,16 @@ public class JSONReader extends AsyncTask<String, Void, JSONObject> {
 
                 return json;
             } catch (JSONException e) {
-                ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+                ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
             } finally {
                 inputSteam.close();
             }
         } catch (MalformedURLException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         } catch (IOException e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         } catch (Exception e) {
-            ExceptionDialogBuilder.createExceptionDialog(context, e.getMessage()).show();
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
         }
 
         return null;
@@ -86,8 +86,8 @@ public class JSONReader extends AsyncTask<String, Void, JSONObject> {
 
     @Override
     protected void onPreExecute() {
-        if (progressDialog != null) {
-            progressDialog.show();
+        if (this.progressDialog != null) {
+            this.progressDialog.show();
         }
     }
 }
