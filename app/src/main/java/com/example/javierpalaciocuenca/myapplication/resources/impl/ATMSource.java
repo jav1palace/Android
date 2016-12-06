@@ -32,6 +32,6 @@ public class ATMSource extends JSONResource {
 
     @Override
     public List<MapItem> execute() {
-        return standardExecute("http://datos.gijon.es/doc/informacion/bancos-cajeros.json");
+        return execute("http://datos.gijon.es/doc/informacion/bancos-cajeros.json");
     }
 }

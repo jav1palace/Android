@@ -21,6 +21,7 @@ import com.example.javierpalaciocuenca.myapplication.resources.impl.CitizenATMSo
 import com.example.javierpalaciocuenca.myapplication.resources.impl.GolfSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.HealthCentreSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.MentalHealthSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.OilDepositSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.RecreationalAreaSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.SoccerFieldSource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
@@ -45,7 +46,7 @@ public class ServiceListActivity extends Activity {
 
     private HashMap<String, Class> classMap = new HashMap<String, Class>() {
         {
-            put("Clothes Containers", CitizenATMSource.class);
+            put("Clothes Deposits", CitizenATMSource.class);
             put("Bowling", BowlingSource.class);
             put("ATMs", ATMSource.class);
             put("Recreational Areas", RecreationalAreaSource.class);
@@ -56,6 +57,7 @@ public class ServiceListActivity extends Activity {
             put("Health Centres", HealthCentreSource.class);
             put("Cinemas", CinemaSource.class);
             put("Mental Health", MentalHealthSource.class);
+            put("Oil Deposits", OilDepositSource.class);
             put("Twitter", null);
         }
     };

@@ -63,7 +63,7 @@ public abstract class JSONResource {
     }
 
     //Default execute for standard JSON formatting
-    protected List<MapItem> standardExecute(String resourceURL) {
+    protected List<MapItem> execute(String resourceURL) {
         JSONObject jsonObject;
         List<MapItem> mapItems = new ArrayList<>();
 
@@ -94,6 +94,39 @@ public abstract class JSONResource {
                 url = jsonObject.has("url") ? jsonObject.getString("url") : null;
 
                 mapItems.add(new MapItem(title, latLng, this.marker, url));
+            }
+        } catch (InterruptedException e) {
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
+        } catch (ExecutionException e) {
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
+        } catch (JSONException e) {
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
+        }
+
+        return mapItems;
+    }
+
+    protected List<MapItem> execute(String url, String key) {
+        MapItem mapItem;
+        JSONObject jsonObject;
+        List<MapItem> mapItems = new ArrayList<>();
+
+        AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(this.context, this.progressDialog).execute(url);
+
+        try {
+            LatLng latLng;
+            String title;
+
+            jsonObject = asyncTask.get();
+            JSONArray jsonArray = jsonObject.getJSONObject(key).getJSONArray(key.substring(0, key.length() - 1));
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                jsonObject = jsonArray.getJSONObject(i);
+
+                latLng = new LatLng(jsonObject.getDouble("latitud"), jsonObject.getDouble("longitud"));
+                title = jsonObject.getString("lugar");
+                mapItem = new MapItem(title, latLng, this.marker);
+                mapItems.add(mapItem);
             }
         } catch (InterruptedException e) {
             ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();

@@ -2,22 +2,12 @@ package com.example.javierpalaciocuenca.myapplication.resources.impl;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
-import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
-import com.example.javierpalaciocuenca.myapplication.utils.JSONReader;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
-import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by javierpalaciocuenca on 27/11/2016.
@@ -42,6 +32,6 @@ public class BowlingSource extends JSONResource {
 
     @Override
     public List<MapItem> execute() {
-        return standardExecute("http://datos.gijon.es/doc/deporte/boleras.json");
+        return execute("http://datos.gijon.es/doc/deporte/boleras.json");
     }
 }
