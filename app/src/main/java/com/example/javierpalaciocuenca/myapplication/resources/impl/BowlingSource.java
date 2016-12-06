@@ -1,14 +1,14 @@
-package com.example.javierpalaciocuenca.myapplication.services.impl;
+package com.example.javierpalaciocuenca.myapplication.resources.impl;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.javierpalaciocuenca.myapplication.R;
-import com.example.javierpalaciocuenca.myapplication.services.JSONResource;
-import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
-import com.example.javierpalaciocuenca.myapplication.utilities.JSONReader;
-import com.example.javierpalaciocuenca.myapplication.utilities.MapItem;
+import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
+import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
+import com.example.javierpalaciocuenca.myapplication.utils.JSONReader;
+import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;

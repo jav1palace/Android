@@ -1,4 +1,4 @@
-package com.example.javierpalaciocuenca.myapplication.utilities;
+package com.example.javierpalaciocuenca.myapplication.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,7 +17,7 @@ public class ExceptionDialogBuilder {
         try{
             alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle("Exception");
-            alertDialog.setIcon(R.drawable.atm_citizen_icon);
+            alertDialog.setIcon(R.drawable.empty);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setMessage(message);
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",

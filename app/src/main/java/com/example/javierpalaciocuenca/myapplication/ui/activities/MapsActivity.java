@@ -1,4 +1,4 @@
-package com.example.javierpalaciocuenca.myapplication.services;
+package com.example.javierpalaciocuenca.myapplication.ui.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.javierpalaciocuenca.myapplication.R;
-import com.example.javierpalaciocuenca.myapplication.utilities.ExceptionDialogBuilder;
-import com.example.javierpalaciocuenca.myapplication.utilities.MapItem;
+import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -20,6 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -96,21 +97,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
             String url;
+            LatLng latLng;
             for (MapItem mapItem : mapItems) {
                 markerOptions = new MarkerOptions();
-                markerOptions.position(mapItem.getLatLng());
-                markerOptions.title(mapItem.getTitle());
+                latLng = mapItem.getLatLng();
+                if (latLng != null) {
+                    markerOptions.position(latLng);
+                    markerOptions.title(mapItem.getTitle());
 
-                url = mapItem.getUrl();
-                if (url != null) {
-                    markerOptions.snippet(url);
+                    url = mapItem.getUrl();
+                    if (url != null) {
+                        markerOptions.snippet(url);
+                    }
+
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
+
+                    this.markers.add(mMap.addMarker(markerOptions));
+
+                    builder.include(mapItem.getLatLng());
                 }
-
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
-
-                this.markers.add(mMap.addMarker(markerOptions));
-
-                builder.include(mapItem.getLatLng());
             }
 
             /* Move the camera to take all the markers in case there's any */
