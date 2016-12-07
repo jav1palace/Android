@@ -6,6 +6,7 @@ import android.content.Context;
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.URLConstants;
 
 import java.util.List;
 
@@ -16,21 +17,16 @@ import java.util.List;
 public class CampingSource extends JSONResource {
 
     public CampingSource() {
-
+        setURL(URLConstants.CAMPING_SOURCE_URL);
     }
 
     public CampingSource(Context context, ProgressDialog progressDialog) {
-        new CampingSource();
+        this();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
     public CampingSource(Context context) {
         new CampingSource(context, null);
-    }
-
-    @Override
-    public List<MapItem> execute() {
-        return standardExecute("http://datos.gijon.es/doc/turismo/camping.json");
     }
 }

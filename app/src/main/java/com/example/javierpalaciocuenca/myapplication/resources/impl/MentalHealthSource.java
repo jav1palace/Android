@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.URLConstants;
 
 import java.util.List;
 
@@ -15,21 +16,16 @@ import java.util.List;
 public class MentalHealthSource extends JSONResource {
 
     public MentalHealthSource() {
-
+        setURL(URLConstants.MENTAL_HEALTH_SOURCE_URL);
     }
 
     public MentalHealthSource(Context context, ProgressDialog progressDialog) {
-        new MentalHealthSource();
+        this();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
     public MentalHealthSource(Context context) {
         new MentalHealthSource(context, null);
-    }
-
-    @Override
-    public List<MapItem> execute() {
-        return standardExecute("http://datos.gijon.es/doc/salud/centros-salud-mental.json");
     }
 }

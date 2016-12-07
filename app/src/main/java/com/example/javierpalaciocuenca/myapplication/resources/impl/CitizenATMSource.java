@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.Constants;
 import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.myapplication.utils.JSONReader;
+import com.example.javierpalaciocuenca.myapplication.utils.URLConstants;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -28,49 +30,17 @@ public class CitizenATMSource extends JSONResource {
     public CitizenATMSource() {
         setIcon(R.drawable.atm_citizen_icon);
         setMarker(R.drawable.atm_citizen_marker); // Size has to be 25x25
+        setURL(URLConstants.CITIZEN_SOURCE_URL);
+        setKey(Constants.JSON_CLOTHES_ARRAY_NAME_PLURAL);
     }
 
     public CitizenATMSource(Context context, ProgressDialog progressDialog) {
-        new CitizenATMSource();
+        this();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
     public CitizenATMSource(Context context) {
         new CitizenATMSource(context, null);
-    }
-
-    @Override
-    public List<MapItem> execute() {
-        MapItem mapItem;
-        JSONObject jsonObject;
-        List<MapItem> mapItems = new ArrayList<>();
-
-        AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(this.context, this.progressDialog).execute("http://opendata.gijon.es/descargar.php?id=7&tipo=JSON");
-
-        try {
-            LatLng latLng;
-            String title;
-
-            jsonObject = asyncTask.get();
-            JSONArray jsonArray = jsonObject.getJSONObject("contenedorropas").getJSONArray("contenedorropa");
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-
-                latLng = new LatLng(jsonObject.getDouble("latitud"), jsonObject.getDouble("longitud"));
-                title = jsonObject.getString("lugar");
-                mapItem = new MapItem(title, latLng, this.marker);
-                mapItems.add(mapItem);
-            }
-        } catch (InterruptedException e) {
-            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
-        } catch (ExecutionException e) {
-            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
-        } catch (JSONException e) {
-            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
-        }
-
-        return mapItems;
     }
 }

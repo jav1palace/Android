@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.URLConstants;
 
 import java.util.List;
 
@@ -15,21 +16,16 @@ import java.util.List;
 public class SoccerFieldSource extends JSONResource {
 
     public SoccerFieldSource() {
-
+        setURL(URLConstants.SOCCER_FIELD_SOURCE_URL);
     }
 
     public SoccerFieldSource(Context context, ProgressDialog progressDialog) {
-        new SoccerFieldSource();
+        this();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
     public SoccerFieldSource(Context context) {
         new SoccerFieldSource(context, null);
-    }
-
-    @Override
-    public List<MapItem> execute() {
-        return standardExecute("http://datos.gijon.es/doc/deporte/campos-futbol.json");
     }
 }

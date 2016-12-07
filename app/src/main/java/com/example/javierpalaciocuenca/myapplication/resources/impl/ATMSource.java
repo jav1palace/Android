@@ -6,6 +6,7 @@ import android.content.Context;
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.URLConstants;
 
 import java.util.List;
 
@@ -18,20 +19,16 @@ public class ATMSource extends JSONResource {
     public ATMSource() {
         setIcon(R.drawable.atm_icon);
         setMarker(R.drawable.atm_marker); // Size has to be 25x25
+        setURL(URLConstants.ATM_SOURCE_URL);
     }
 
     public ATMSource(Context context, ProgressDialog progressDialog) {
-        new ATMSource();
+        this();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
     public ATMSource(Context context) {
         new ATMSource(context, null);
-    }
-
-    @Override
-    public List<MapItem> execute() {
-        return execute("http://datos.gijon.es/doc/informacion/bancos-cajeros.json");
     }
 }

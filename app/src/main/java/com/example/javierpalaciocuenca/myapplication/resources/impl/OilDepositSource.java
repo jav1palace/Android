@@ -6,6 +6,8 @@ import android.content.Context;
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.Constants;
+import com.example.javierpalaciocuenca.myapplication.utils.URLConstants;
 
 import java.util.List;
 
@@ -16,21 +18,17 @@ import java.util.List;
 public class OilDepositSource extends JSONResource {
 
     public OilDepositSource() {
-
+        setURL(URLConstants.OIL_DEPOSIT_SOURCE_URL);
+        setKey(Constants.JSON_OIL_ARRAY_NAME_PLURAL);
     }
 
     public OilDepositSource(Context context, ProgressDialog progressDialog) {
-        new OilDepositSource();
+        this();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
     public OilDepositSource(Context context) {
         new OilDepositSource(context, null);
-    }
-
-    @Override
-    public List<MapItem> execute() {
-        return execute("http://opendata.gijon.es/descargar.php?id=6&tipo=JSON", "contenedoraceites");
     }
 }
