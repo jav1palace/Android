@@ -12,24 +12,24 @@ import java.util.List;
  * Created by javierpalaciocuenca on 27/11/2016.
  */
 
-public class RecreationalAreaSource extends JSONResource {
+public class GolfSource extends JSONResource {
 
-    public RecreationalAreaSource() {
+    public GolfSource() {
 
     }
 
-    public RecreationalAreaSource(Context context, ProgressDialog progressDialog) {
-        new RecreationalAreaSource();
+    public GolfSource(Context context, ProgressDialog progressDialog) {
+        new GolfSource();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
-    public RecreationalAreaSource(Context context) {
-        new RecreationalAreaSource(context, null);
+    public GolfSource(Context context) {
+        new GolfSource(context, null);
     }
 
     @Override
     public List<MapItem> execute() {
-        return execute("http://datos.gijon.es/doc/medio-ambiente/areas-recreativas.json");
+        return standardExecute("http://datos.gijon.es/doc/deporte/campos-golf.json");
     }
 }

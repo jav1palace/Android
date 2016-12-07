@@ -3,6 +3,7 @@ package com.example.javierpalaciocuenca.myapplication.resources.impl;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 
@@ -12,24 +13,24 @@ import java.util.List;
  * Created by javierpalaciocuenca on 27/11/2016.
  */
 
-public class RecreationalAreaSource extends JSONResource {
+public class HealthCentreSource extends JSONResource {
 
-    public RecreationalAreaSource() {
-
+    public HealthCentreSource() {
+        
     }
 
-    public RecreationalAreaSource(Context context, ProgressDialog progressDialog) {
-        new RecreationalAreaSource();
+    public HealthCentreSource(Context context, ProgressDialog progressDialog) {
+        new HealthCentreSource();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
-    public RecreationalAreaSource(Context context) {
-        new RecreationalAreaSource(context, null);
+    public HealthCentreSource(Context context) {
+        new HealthCentreSource(context, null);
     }
 
     @Override
     public List<MapItem> execute() {
-        return execute("http://datos.gijon.es/doc/medio-ambiente/areas-recreativas.json");
+        return standardExecute("http://datos.gijon.es/doc/salud/salud.json");
     }
 }

@@ -12,24 +12,24 @@ import java.util.List;
  * Created by javierpalaciocuenca on 27/11/2016.
  */
 
-public class RecreationalAreaSource extends JSONResource {
+public class MentalHealthSource extends JSONResource {
 
-    public RecreationalAreaSource() {
+    public MentalHealthSource() {
 
     }
 
-    public RecreationalAreaSource(Context context, ProgressDialog progressDialog) {
-        new RecreationalAreaSource();
+    public MentalHealthSource(Context context, ProgressDialog progressDialog) {
+        new MentalHealthSource();
         this.context = context;
         this.progressDialog = progressDialog;
     }
 
-    public RecreationalAreaSource(Context context) {
-        new RecreationalAreaSource(context, null);
+    public MentalHealthSource(Context context) {
+        new MentalHealthSource(context, null);
     }
 
     @Override
     public List<MapItem> execute() {
-        return execute("http://datos.gijon.es/doc/medio-ambiente/areas-recreativas.json");
+        return standardExecute("http://datos.gijon.es/doc/salud/centros-salud-mental.json");
     }
 }
