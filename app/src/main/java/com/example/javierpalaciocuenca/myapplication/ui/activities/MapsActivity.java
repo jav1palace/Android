@@ -8,7 +8,10 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.javierpalaciocuenca.myapplication.R;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.BusStopSource;
+import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.ActivityStatus;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
+import com.example.javierpalaciocuenca.myapplication.utils.Constants;
 import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -32,9 +35,12 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "MapsActivity";
 
+
     private GoogleMap mMap;
     private List<Marker> markers;
     private ArrayList<MapItem> mapItems;
+    private String intentType;
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -42,6 +48,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private GoogleApiClient client;
 
+    private void cleanMarkers() {
+        Iterator<Marker> iterator = markers.iterator();
+
+        while (iterator.hasNext()) {
+            iterator.next().remove();
+            iterator.remove();
+        }
+    }
+
+    private void initResetButton(Button resetButton) {
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cleanMarkers();
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /* Receive the intent */
         Intent intent = getIntent();
+        this.intentType = intent.getStringExtra("intentType");
         this.mapItems = intent.getParcelableArrayListExtra("mapItems");
 
         /* Init the marker list */
@@ -67,17 +91,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    public void initResetButton(Button resetButton) {
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Iterator<Marker> iterator = markers.iterator();
-                while (iterator.hasNext()) {
-                    iterator.next().remove();
-                    iterator.remove();
+    private void createMarkers(LatLngBounds.Builder builder) {
+        String url;
+        LatLng latLng;
+        MarkerOptions markerOptions;
+
+        for (MapItem mapItem : this.mapItems) {
+            markerOptions = new MarkerOptions();
+            latLng = mapItem.getLatLng();
+            if (latLng != null) {
+                markerOptions.position(latLng);
+                markerOptions.title(mapItem.getTitle());
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
+
+                url = mapItem.getUrl();
+                if (url != null) {
+                    //Hide URL temporary
+                    //markerOptions.snippet(url);
                 }
+
+                this.markers.add(this.mMap.addMarker(markerOptions));
+
+                builder.include(mapItem.getLatLng());
             }
-        });
+        }
+    }
+
+    private void centerBounds(LatLngBounds.Builder builder) {
+        /* Move the camera to take all the markers in case there's any */
+        if (this.markers.size() > 0) {
+            LatLngBounds bounds = builder.build();
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (width * Constants.MAP_ACTIVITY_BOUNDS_OFFSET);
+
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding); //offset from edges of the map in pixels
+            this.mMap.moveCamera(cu);
+        }
     }
 
     /**
@@ -94,48 +144,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.mMap = googleMap;
 
         try {
-            MarkerOptions markerOptions;
-
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-            String url;
-            LatLng latLng;
-            for (MapItem mapItem : mapItems) {
-                markerOptions = new MarkerOptions();
-                latLng = mapItem.getLatLng();
-                if (latLng != null) {
-                    markerOptions.position(latLng);
-                    markerOptions.title(mapItem.getTitle());
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
+            createMarkers(builder);
+            centerBounds(builder);
 
-                    url = mapItem.getUrl();
-                    if (url != null) {
-                        //Hide URL temporary
-                        //markerOptions.snippet(url);
-                    }
-                    
-                    this.markers.add(mMap.addMarker(markerOptions));
+            if (this.intentType.equals(Constants.INTENT_TYPE_BUS)) {
+                //FETCHING EVERY X SECONDS
+                BusStopSource busSource = new BusStopSource();
 
-                    builder.include(mapItem.getLatLng());
+                while (ActivityStatus.isActivityVisible()) {
+                    this.mapItems = (ArrayList<MapItem>) busSource.execute();
+                    createMarkers(builder);
+                    centerBounds(builder);
+                    Thread.sleep(Constants.BUS_FETCHING_TIME);
                 }
-            }
-
-            /* Move the camera to take all the markers in case there's any */
-            if (this.markers.size() > 0) {
-                LatLngBounds bounds = builder.build();
-                int width = getResources().getDisplayMetrics().widthPixels;
-                int height = getResources().getDisplayMetrics().heightPixels;
-                int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
-
-                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding); //offset from edges of the map in pixels
-                this.mMap.moveCamera(cu);
-
-
             }
         } catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();
         }
-
     }
 
     /**
@@ -157,6 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onStart() {
         super.onStart();
+        ActivityStatus.activityResumed();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -167,10 +195,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onStop() {
         super.onStop();
+        ActivityStatus.activityPaused();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         this.client.disconnect();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ActivityStatus.activityResumed();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ActivityStatus.activityPaused();
     }
 }

@@ -91,7 +91,7 @@ public abstract class JSONResource {
             try {
                 AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(getContext(), getProgressDialog()).execute(getURL());
                 jsonObject = asyncTask.get();
-                
+
                 mapItems = JSONResourceUtils.getMapItems(jsonObject, getKey(), getMarker());
             } catch (InterruptedException e) {
                 ExceptionDialogBuilder.createExceptionDialog(getContext(), e.getMessage()).show();
