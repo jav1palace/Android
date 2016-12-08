@@ -5,15 +5,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.javierpalaciocuenca.myapplication.R;
+import com.example.javierpalaciocuenca.myapplication.persistence.MyDataBaseHelper;
 import com.example.javierpalaciocuenca.myapplication.resources.JSONResource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.ATMSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.BowlingSource;
+import com.example.javierpalaciocuenca.myapplication.resources.impl.BusStopSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CampingSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CasinoSource;
 import com.example.javierpalaciocuenca.myapplication.resources.impl.CinemaSource;
@@ -26,6 +29,7 @@ import com.example.javierpalaciocuenca.myapplication.resources.impl.Recreational
 import com.example.javierpalaciocuenca.myapplication.resources.impl.SoccerFieldSource;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
 import com.example.javierpalaciocuenca.myapplication.ui.custom.CustomList;
+import com.example.javierpalaciocuenca.myapplication.utils.Constants;
 import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -38,12 +42,12 @@ import java.util.List;
 
 
 public class ServiceListActivity extends Activity {
+    private static final String TAG = "ServiceListActivity";
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-
+    private GoogleApiClient client;
+    private ListView listView;
+    private CustomList adapter;
+    private ProgressDialog progressDialog;
     private HashMap<String, Class> classMap = new HashMap<String, Class>() {
         {
             put("Clothes Deposits", CitizenATMSource.class);
@@ -61,66 +65,103 @@ public class ServiceListActivity extends Activity {
             put("Twitter", null);
         }
     };
+    private List<String> headers = new ArrayList<>(this.classMap.keySet());
 
-    private GoogleApiClient client;
-    private ListView listView;
-    private CustomList adapter;
-    private ProgressDialog progressDialog;
-    private List<String> headers = new ArrayList<>(classMap.keySet());
+    private List<MapItem> getMapItems(int position) throws IllegalAccessException, InstantiationException {
+        JSONResource jsonResource = (JSONResource) this.classMap.get(headers.get(position)).newInstance();
+        jsonResource.setContext(ServiceListActivity.this);
+        jsonResource.setProgressDialog(progressDialog);
+
+        return jsonResource.execute();
+    }
+
+    private Intent createIntent(Class usableClass, ArrayList<MapItem> mapItems) {
+
+        String intentType = usableClass != BusStopSource.class ? Constants.INTENT_TYPE_DEFAULT : Constants.INTENT_TYPE_BUS;
+
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        intent.putExtra("intentType", intentType);
+        intent.putExtra("mapItems", mapItems);
+
+        return intent;
+    }
+
+    private void clickLogic(int position) {
+        //TODO: Create a factory that creates the object or maybe create a naming code like in MyJet with the upserts
+        try {
+            Class usableClass = classMap.get(headers.get(position));
+            if (usableClass != null) {
+
+                ArrayList<MapItem> mapItems = (ArrayList<MapItem>) getMapItems(position);
+                Intent intent = createIntent(usableClass, mapItems);
+
+                startActivity(intent);
+            } else {
+                Toast.makeText(ServiceListActivity.this, "The " + headers.get(+position) + " is not available yet ", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (InstantiationException e) {
+            ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
+        } catch (IllegalAccessException e) {
+            ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
+        }
+    }
+
+    private void initAdapter() {
+        if (this.adapter == null) {
+            this.adapter = new CustomList(ServiceListActivity.this, classMap);
+        }
+    }
+
+    private void initProgressDialog() {
+        if (this.progressDialog == null) {
+            this.progressDialog = new ProgressDialog(ServiceListActivity.this);
+            this.progressDialog.setTitle("Connecting");
+            this.progressDialog.setMessage("Resource is being downloaded and processed");
+        }
+    }
+
+    private void initListView() {
+        this.listView = (ListView) findViewById(R.id.listview);
+        this.listView.setAdapter(this.adapter);
+        this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                clickLogic(position);
+            }
+        });
+    }
+
+    private void initDatabase() {
+        MyDataBaseHelper dataBaseHelper = MyDataBaseHelper.getInstance(ServiceListActivity.this);
+
+        BusStopSource busSource = new BusStopSource(ServiceListActivity.this, null);
+        dataBaseHelper.insertBusStops(busSource.getBusStops());
+
+        if (dataBaseHelper.getAllBusStops().size() != 0) {
+            Log.v(TAG, "DataBase bus stops fillup ✓");
+        } else {
+            Log.v(TAG, "DataBase bus stops fillup x");
+        }
+    }
+
+    private void init() {
+        setContentView(R.layout.main_activity);
+        initAdapter();
+        initProgressDialog();
+        initListView();
+        initDatabase();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
         try {
-
-            if (this.adapter == null) {
-                this.adapter = new CustomList(ServiceListActivity.this, classMap);
-            }
-
-            if (this.progressDialog == null) {
-                this.progressDialog = new ProgressDialog(ServiceListActivity.this);
-                this.progressDialog.setTitle("Connecting");
-                this.progressDialog.setMessage("Resource is being downloaded and processed");
-            }
-
-            this.listView = (ListView) findViewById(R.id.listview);
-            this.listView.setAdapter(this.adapter);
-            this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    //TODO: Create a factory that creates the object or maybe create a naming code like in MyJet with the upserts
-                    try {
-                        Class usableClass = classMap.get(headers.get(position));
-                        if (usableClass != null) {
-                            JSONResource jsonResource = (JSONResource) classMap.get(headers.get(position)).newInstance();
-                            jsonResource.setContext(ServiceListActivity.this);
-                            jsonResource.setProgressDialog(progressDialog);
-
-                            ArrayList<MapItem> mapItems = new ArrayList<>(jsonResource.execute());
-
-                            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                            intent.putExtra("mapItems", mapItems);
-
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(ServiceListActivity.this, "The "+ headers.get(+position) + " is not available yet ", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } catch (InstantiationException e) {
-                        ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
-                    } catch (IllegalAccessException e) {
-                        ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();
-                    }
-
-                }
-            });
 
             // ATTENTION: This was auto-generated to implement the App Indexing API.
             // See https://g.co/AppIndexing/AndroidStudio for more information.
             client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+            init();
 
         }catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(ServiceListActivity.this, e.getMessage()).show();

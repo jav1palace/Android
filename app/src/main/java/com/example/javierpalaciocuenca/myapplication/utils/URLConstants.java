@@ -17,7 +17,7 @@ public class URLConstants {
     public final static String OIL_DEPOSIT_SOURCE_URL = "http://opendata.gijon.es/descargar.php?id=6&tipo=JSON";
     public final static String RECREATIONAL_AREA_SOURCE_URL = "http://datos.gijon.es/doc/medio-ambiente/areas-recreativas.json";
     public final static String SOCCER_FIELD_SOURCE_URL = "http://datos.gijon.es/doc/deporte/campos-futbol.json";
+    public final static String BUS_STOP_SOURCE_URL = "http://datos.gijon.es/doc/transporte/busgijontray.json";
+
     public final static String DEFAULT_SOURCE_URL = "empty";
-
-
 }
