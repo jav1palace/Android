@@ -11,9 +11,7 @@ import com.example.javierpalaciocuenca.myapplication.utils.Constants;
 import com.example.javierpalaciocuenca.myapplication.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.myapplication.utils.JSONReader;
 import com.example.javierpalaciocuenca.myapplication.utils.URLConstants;
-import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,7 +61,7 @@ public abstract class JSONResource {
         return marker;
     }
 
-    ProgressDialog getProgressBar() {
+    ProgressDialog getProgressDialog() {
         return progressDialog;
     }
 
@@ -84,48 +82,6 @@ public abstract class JSONResource {
     }
 
     public List<MapItem> execute() {
-         class Utils {
-            private LatLng getLatLng(JSONObject jsonObject) throws JSONException {
-                LatLng latLng;
-
-                if (getKey().equals(Constants.JSON_DEFAULT_ARRAY_NAME_PLURAL)) {
-                    String[] location;
-                    JSONObject objectLocationContent;
-
-                    objectLocationContent = jsonObject.getJSONObject("localizacion");
-                    location = objectLocationContent.has("content") ? objectLocationContent.getString("content").split(" ") : null;
-                    latLng = location != null ? new LatLng(Double.parseDouble(location[0]), Double.parseDouble(location[1])) : null;
-
-                } else {
-                    latLng = new LatLng(jsonObject.getDouble("latitud"), jsonObject.getDouble("longitud"));
-                }
-
-                return latLng;
-            }
-
-            private String getTitle(JSONObject jsonObject) throws JSONException {
-                String title;
-
-                if (getKey().equals(Constants.JSON_DEFAULT_ARRAY_NAME_PLURAL)) {
-                    JSONObject objectTitle;
-
-                    objectTitle = jsonObject.getJSONObject("nombre");
-                    title = objectTitle.has("content") ? objectTitle.getString("content") : null;
-                    Log.d(TAG, "### Example of test label");
-
-                } else {
-                    title = jsonObject.getString("lugar");
-                }
-
-                return title;
-            }
-
-            private String getURL(JSONObject jsonObject) throws JSONException {
-                String urlObject = jsonObject.has("url") ? jsonObject.getString("url") : null;
-
-                return urlObject;
-            }
-        }
 
         JSONObject jsonObject;
         List<MapItem> mapItems = new ArrayList<>();
@@ -133,24 +89,10 @@ public abstract class JSONResource {
         if (!getURL().equals(URLConstants.DEFAULT_SOURCE_URL)) {
 
             try {
-                LatLng latLng;
-                String title, urlForMarker;
-
-                AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(this.context, this.progressDialog).execute(getURL());
-
+                AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(getContext(), getProgressDialog()).execute(getURL());
                 jsonObject = asyncTask.get();
-                JSONArray jsonArray = jsonObject.getJSONObject(getKey()).getJSONArray(getKey().substring(0, getKey().length() - 1));
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    jsonObject = jsonArray.getJSONObject(i);
-
-                    latLng = new Utils().getLatLng(jsonObject);
-                    title = new Utils().getTitle(jsonObject);
-                    urlForMarker = new Utils().getURL(jsonObject);
-
-                    mapItems.add(new MapItem(title, latLng, getMarker(), urlForMarker));
-
-                }
+                
+                mapItems = JSONResourceUtils.getMapItems(jsonObject, getKey(), getMarker());
             } catch (InterruptedException e) {
                 ExceptionDialogBuilder.createExceptionDialog(getContext(), e.getMessage()).show();
             } catch (ExecutionException e) {
