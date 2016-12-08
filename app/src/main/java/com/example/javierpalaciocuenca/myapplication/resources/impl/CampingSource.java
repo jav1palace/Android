@@ -15,6 +15,7 @@ import java.util.List;
  */
 
 public class CampingSource extends JSONResource {
+    private static final String TAG = "CampingSource";
 
     public CampingSource() {
         setURL(URLConstants.CAMPING_SOURCE_URL);

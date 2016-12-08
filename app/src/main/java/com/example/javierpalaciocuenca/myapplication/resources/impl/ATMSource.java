@@ -15,6 +15,7 @@ import java.util.List;
  */
 
 public class ATMSource extends JSONResource {
+    private static final String TAG = "ATMSource";
 
     public ATMSource() {
         setIcon(R.drawable.atm_icon);

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CustomList extends ArrayAdapter<String>{
+    private static final String TAG = "CustomList";
 
     private final Activity context;
     private final ArrayList<String> items;

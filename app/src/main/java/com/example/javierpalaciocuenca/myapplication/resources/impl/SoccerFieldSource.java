@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class SoccerFieldSource extends JSONResource {
+    private static final String TAG = "SoccerFieldSource";
 
     public SoccerFieldSource() {
         setURL(URLConstants.SOCCER_FIELD_SOURCE_URL);

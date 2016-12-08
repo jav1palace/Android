@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class RecreationalAreaSource extends JSONResource {
+    private static final String TAG = "RecreationalAreaSource";
 
     public RecreationalAreaSource() {
         setURL(URLConstants.RECREATIONAL_AREA_SOURCE_URL);

@@ -11,6 +11,8 @@ import com.example.javierpalaciocuenca.myapplication.R;
  */
 
 public class ExceptionDialogBuilder {
+    private static final String TAG = "ExceptionDialogBuilder";
+
     public static AlertDialog alertDialog;
 
     public static AlertDialog createExceptionDialog(Context context, String message){

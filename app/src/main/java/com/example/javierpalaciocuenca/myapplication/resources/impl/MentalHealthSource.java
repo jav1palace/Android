@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class MentalHealthSource extends JSONResource {
+    private static final String TAG = "MentalHealthSource";
 
     public MentalHealthSource() {
         setURL(URLConstants.MENTAL_HEALTH_SOURCE_URL);

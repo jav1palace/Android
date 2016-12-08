@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class CitizenATMSource extends JSONResource {
+    private static final String TAG = "CitizenATMSource";
 
     public CitizenATMSource() {
         setIcon(R.drawable.atm_citizen_icon);

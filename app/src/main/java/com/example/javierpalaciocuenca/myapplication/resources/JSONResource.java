@@ -3,6 +3,7 @@ package com.example.javierpalaciocuenca.myapplication.resources;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.example.javierpalaciocuenca.myapplication.ui.activities.utils.MapItem;
@@ -25,6 +26,8 @@ import java.util.concurrent.ExecutionException;
  */
 
 public abstract class JSONResource {
+    private static final String TAG = "JSONResource";
+
     protected Context context;
     protected ProgressDialog progressDialog;
     protected Integer icon = R.drawable.default_icon;
@@ -108,6 +111,7 @@ public abstract class JSONResource {
 
                     objectTitle = jsonObject.getJSONObject("nombre");
                     title = objectTitle.has("content") ? objectTitle.getString("content") : null;
+                    Log.d(TAG, "### Example of test label");
 
                 } else {
                     title = jsonObject.getString("lugar");
@@ -140,13 +144,8 @@ public abstract class JSONResource {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = jsonArray.getJSONObject(i);
 
-                    //Location
                     latLng = new Utils().getLatLng(jsonObject);
-
-                    //Title
                     title = new Utils().getTitle(jsonObject);
-
-                    //URL
                     urlForMarker = new Utils().getURL(jsonObject);
 
                     mapItems.add(new MapItem(title, latLng, getMarker(), urlForMarker));

@@ -16,6 +16,7 @@ import java.util.List;
  */
 
 public class OilDepositSource extends JSONResource {
+    private static final String TAG = "OilDepositSource";
 
     public OilDepositSource() {
         setURL(URLConstants.OIL_DEPOSIT_SOURCE_URL);

@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 
 public class MapItem implements Parcelable {
+
     public static final Parcelable.Creator<MapItem> CREATOR = new Parcelable.Creator<MapItem>() {
         public MapItem createFromParcel(Parcel in) {
             String title = in.readString();
@@ -30,6 +31,7 @@ public class MapItem implements Parcelable {
             return new MapItem[size];
         }
     };
+    private static final String TAG = "MapItem";
 
     private LatLng latLng;
     private String title, url;

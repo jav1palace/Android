@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class CinemaSource extends JSONResource {
+    private static final String TAG = "CinemaSource";
 
     public CinemaSource() {
         setURL(URLConstants.CINEMA_SOURCE_URL);

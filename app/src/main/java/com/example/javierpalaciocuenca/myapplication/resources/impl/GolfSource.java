@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class GolfSource extends JSONResource {
+    private static final String TAG = "GolfSource";
 
     public GolfSource() {
         setURL(URLConstants.GOLF_SOURCE_URL);

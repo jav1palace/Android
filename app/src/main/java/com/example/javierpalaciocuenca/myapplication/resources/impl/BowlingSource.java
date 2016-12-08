@@ -15,6 +15,7 @@ import java.util.List;
  */
 
 public class BowlingSource extends JSONResource {
+    private static final String TAG = "BowlingSource";
 
     public BowlingSource() {
         setIcon(R.drawable.bowling_icon);

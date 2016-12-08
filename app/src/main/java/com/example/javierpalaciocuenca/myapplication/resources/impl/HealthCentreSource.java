@@ -15,6 +15,7 @@ import java.util.List;
  */
 
 public class HealthCentreSource extends JSONResource {
+    private static final String TAG = "HealthCentreSource";
 
     public HealthCentreSource() {
         setURL(URLConstants.HEALTH_CENTRE_SOURCE_URL);

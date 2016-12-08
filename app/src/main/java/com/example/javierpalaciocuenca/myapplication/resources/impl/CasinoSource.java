@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class CasinoSource extends JSONResource {
+    private static final String TAG = "CasinoSource";
 
     public CasinoSource() {
         setURL(URLConstants.CASINO_SOURCE_URL);

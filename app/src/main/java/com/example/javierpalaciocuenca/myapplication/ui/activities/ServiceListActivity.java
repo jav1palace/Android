@@ -62,6 +62,8 @@ public class ServiceListActivity extends Activity {
         }
     };
 
+    private static final String TAG = "ServiceListActivity";
+
     private GoogleApiClient client;
     private ListView listView;
     private CustomList adapter;
