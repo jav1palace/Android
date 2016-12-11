@@ -16,7 +16,8 @@ public class OilDepositSource extends JSONResource {
 
     public OilDepositSource() {
         setURL(URLConstants.OIL_DEPOSIT_SOURCE_URL);
-        setKey(Constants.JSON_OIL_ARRAY_NAME_PLURAL);
+        setPluralKey(Constants.JSON_OIL_ARRAY_NAME_PLURAL);
+        setSingularKey(Constants.JSON_OIL_ARRAY_NAME_SINGULAR);
     }
 
     public OilDepositSource(Context context, ProgressDialog progressDialog) {

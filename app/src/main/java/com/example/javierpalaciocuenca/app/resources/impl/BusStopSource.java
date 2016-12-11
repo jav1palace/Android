@@ -4,14 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.javierpalaciocuenca.app.persistence.MyDataBaseHelper;
 import com.example.javierpalaciocuenca.app.persistence.model.BusStop;
+import com.example.javierpalaciocuenca.app.persistence.model.MapItem;
 import com.example.javierpalaciocuenca.app.resources.JSONResource;
-import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.app.resources.utils.JSONReader;
-import com.example.javierpalaciocuenca.app.utils.constants.URLConstants;
+import com.example.javierpalaciocuenca.app.resources.utils.JSONResourceUtils;
+import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.app.utils.constants.Constants;
+import com.example.javierpalaciocuenca.app.utils.constants.URLConstants;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,11 +26,12 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class BusStopSource extends JSONResource {
-    private String singularKey = Constants.JSON_BUS_STOPS_NAME_SINGULAR;
+    private static final String TAG = "BusStopSource";
 
     public BusStopSource() {
         setURL(URLConstants.BUS_STOP_SOURCE_URL);
-        setKey(Constants.JSON_BUS_STOPS_NAME_PLURAL);
+        setPluralKey(Constants.JSON_BUS_STOPS_NAME_PLURAL);
+        setSingularKey(Constants.JSON_BUS_STOPS_NAME_SINGULAR);
     }
 
     public BusStopSource(Context context, ProgressDialog progressDialog) {
@@ -42,28 +45,15 @@ public class BusStopSource extends JSONResource {
     }
 
     public List<BusStop> getBusStops() {
-        ArrayList<BusStop> busStops = new ArrayList<>();
+        List<BusStop> busStops = new ArrayList<>();
         try {
-            int orden, idLinea, idTrayecto;
-            double utmx, utmy;
-            JSONObject jsonObject;
 
             AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(this.context, this.progressDialog).execute(getURL());
 
+            JSONObject jsonObject;
             jsonObject = asyncTask.get();
-            JSONArray jsonArray = jsonObject.getJSONObject(getKey()).getJSONArray(singularKey);
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-
-                orden = Integer.parseInt(jsonObject.getString("orden"));
-                idLinea = Integer.parseInt(jsonObject.getString("idlinea"));
-                idTrayecto = Integer.parseInt(jsonObject.getString("idtrayecto"));
-                utmx = Double.parseDouble(jsonObject.getString("utmx"));
-                utmy = Double.parseDouble(jsonObject.getString("utmy"));
-
-                busStops.add(new BusStop(0, orden, idLinea, idTrayecto, utmx, utmy));
-            }
+            busStops = JSONResourceUtils.getBusStops(jsonObject, getPluralKey(), getSingularKey());
 
         } catch (InterruptedException e) {
             ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
@@ -76,5 +66,10 @@ public class BusStopSource extends JSONResource {
         }
 
         return busStops;
+    }
+
+    public List<MapItem> execute() {
+        MyDataBaseHelper dbHelper = MyDataBaseHelper.getInstance(this.context);
+        return JSONResourceUtils.createMapItemsFromBusStops(dbHelper.getAllBusStops(), getMarker());
     }
 }

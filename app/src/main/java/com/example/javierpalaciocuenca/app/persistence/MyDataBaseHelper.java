@@ -107,8 +107,8 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
             for (BusStop busStop : busStops) {
                 values = new ContentValues();
                 values.put(DataBaseConstants.KEY_BUS_STOP_ORDEN, busStop.getOrden());
-                values.put(DataBaseConstants.KEY_BUS_STOP_LINEA, busStop.getIdlinea());
-                values.put(DataBaseConstants.KEY_BUS_STOP_TRAYECTO, busStop.getIdtrayecto());
+                values.put(DataBaseConstants.KEY_BUS_STOP_LINEA, busStop.getIdLinea());
+                values.put(DataBaseConstants.KEY_BUS_STOP_TRAYECTO, busStop.getIdTrayecto());
                 values.put(DataBaseConstants.KEY_BUS_STOP_UTMY, busStop.getUtmy());
                 values.put(DataBaseConstants.KEY_BUS_STOP_UTMX, busStop.getUtmx());
 
@@ -140,8 +140,44 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
                     busStop = new BusStop();
                     busStop.setId(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ID)));
                     busStop.setOrden(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ORDEN)));
-                    busStop.setIdlinea(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_LINEA)));
-                    busStop.setIdtrayecto(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_TRAYECTO)));
+                    busStop.setIdLinea(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_LINEA)));
+                    busStop.setIdTrayecto(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_TRAYECTO)));
+                    busStop.setUtmx(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMX)));
+                    busStop.setUtmy(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMY)));
+
+                    busStops.add(busStop);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Error while getting bus stops x");
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                Log.v(TAG, busStops.size() + " bus stops were retrieved ✓");
+                cursor.close();
+            }
+        }
+        return busStops;
+    }
+
+    public List<BusStop> getBusStops(int idLinea, int idTrayecto) {
+        List<BusStop> busStops = new ArrayList<>();
+
+        String POSTS_SELECT_QUERY = String.format("SELECT * FROM %s WHERE idlinea=%s AND idtrayecto=%s",
+                DataBaseConstants.TABLE_BUS_STOP, idLinea, idTrayecto);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(POSTS_SELECT_QUERY, null);
+        try {
+            if (cursor.moveToFirst()) {
+                BusStop busStop;
+
+                do {
+                    busStop = new BusStop();
+                    busStop.setId(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ID)));
+                    busStop.setOrden(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ORDEN)));
+                    busStop.setIdLinea(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_LINEA)));
+                    busStop.setIdTrayecto(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_TRAYECTO)));
                     busStop.setUtmx(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMY)));
                     busStop.setUtmy(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMX)));
 

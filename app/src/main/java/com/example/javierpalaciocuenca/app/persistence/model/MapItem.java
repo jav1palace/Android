@@ -13,18 +13,7 @@ public class MapItem implements Parcelable {
 
     public static final Parcelable.Creator<MapItem> CREATOR = new Parcelable.Creator<MapItem>() {
         public MapItem createFromParcel(Parcel in) {
-            String title = in.readString();
-            String url = in.readString();
-            Double latitude = in.readDouble();
-            Double longitude = in.readDouble();
-            Integer marker = in.readInt();
-
-            LatLng latLng = null;
-            if (latitude != 0 && longitude != 0) {
-                latLng = new LatLng(latitude, longitude);
-            }
-
-            return new MapItem(title, latLng, marker, url);
+            return new MapItem(in);
         }
 
         public MapItem[] newArray(int size) {
@@ -37,15 +26,36 @@ public class MapItem implements Parcelable {
     private String title, url;
     private Integer marker;
 
-    public MapItem(String title, LatLng latLng, Integer marker){
+    public MapItem() {
+
+    }
+
+    public MapItem(String title, LatLng latLng){
+        this();
         this.title = title;
         this.latLng = latLng;
+    }
+
+    public MapItem(String title, LatLng latLng, Integer marker){
+        this(title, latLng);
         this.marker = marker;
     }
 
     public MapItem(String title, LatLng latLng, Integer marker, String url) {
         this(title, latLng, marker);
         this.url = url;
+    }
+
+    public MapItem(Parcel in){
+        this.title = in.readString();
+        this.url = in.readString();
+        Double latitude = in.readDouble();
+        Double longitude = in.readDouble();
+        this.marker = in.readInt();
+
+        if (latitude != 0 && longitude != 0) {
+            this.latLng = new LatLng(latitude, longitude);
+        }
     }
 
     public LatLng getLatLng() {

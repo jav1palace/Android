@@ -19,7 +19,8 @@ public class CitizenATMSource extends JSONResource {
         setIcon(R.drawable.atm_citizen_icon);
         setMarker(R.drawable.atm_citizen_marker); // Size has to be 25x25
         setURL(URLConstants.CITIZEN_SOURCE_URL);
-        setKey(Constants.JSON_CLOTHES_ARRAY_NAME_PLURAL);
+        setPluralKey(Constants.JSON_CLOTHES_ARRAY_NAME_PLURAL);
+        setSingularKey(Constants.JSON_CLOTHES_ARRAY_NAME_SINGULAR);
     }
 
     public CitizenATMSource(Context context, ProgressDialog progressDialog) {

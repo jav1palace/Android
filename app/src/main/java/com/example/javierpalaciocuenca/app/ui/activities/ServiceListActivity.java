@@ -12,25 +12,27 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.javierpalaciocuenca.app.persistence.MyDataBaseHelper;
+import com.example.javierpalaciocuenca.app.persistence.model.MapItem;
 import com.example.javierpalaciocuenca.app.resources.JSONResource;
 import com.example.javierpalaciocuenca.app.resources.impl.ATMSource;
+import com.example.javierpalaciocuenca.app.resources.impl.BowlingSource;
+import com.example.javierpalaciocuenca.app.resources.impl.BusLocationSource;
+import com.example.javierpalaciocuenca.app.resources.impl.BusStopSource;
 import com.example.javierpalaciocuenca.app.resources.impl.CampingSource;
 import com.example.javierpalaciocuenca.app.resources.impl.CasinoSource;
 import com.example.javierpalaciocuenca.app.resources.impl.CinemaSource;
 import com.example.javierpalaciocuenca.app.resources.impl.CitizenATMSource;
 import com.example.javierpalaciocuenca.app.resources.impl.GolfSource;
+import com.example.javierpalaciocuenca.app.resources.impl.HealthCentreSource;
 import com.example.javierpalaciocuenca.app.resources.impl.MentalHealthSource;
 import com.example.javierpalaciocuenca.app.resources.impl.OilDepositSource;
-import com.example.javierpalaciocuenca.app.resources.impl.SoccerFieldSource;
-import com.example.javierpalaciocuenca.app.persistence.model.MapItem;
-import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
-import com.example.javierpalaciocuenca.myapplication.R;
-import com.example.javierpalaciocuenca.app.resources.impl.BowlingSource;
-import com.example.javierpalaciocuenca.app.resources.impl.BusStopSource;
-import com.example.javierpalaciocuenca.app.resources.impl.HealthCentreSource;
 import com.example.javierpalaciocuenca.app.resources.impl.RecreationalAreaSource;
+import com.example.javierpalaciocuenca.app.resources.impl.SoccerFieldSource;
 import com.example.javierpalaciocuenca.app.ui.custom.CustomList;
+import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
+import com.example.javierpalaciocuenca.app.utils.MapItemsData;
 import com.example.javierpalaciocuenca.app.utils.constants.Constants;
+import com.example.javierpalaciocuenca.myapplication.R;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -57,7 +59,8 @@ public class ServiceListActivity extends Activity {
             put("Cinemas", CinemaSource.class);
             put("Mental Health", MentalHealthSource.class);
             put("Oil Deposits", OilDepositSource.class);
-            put("Twitter", null);
+            put("Live BUS", BusLocationSource.class);
+            put("BUS Lines", BusStopSource.class);
         }
     };
     private List<String> headers = new ArrayList<>(this.classMap.keySet());
@@ -74,12 +77,14 @@ public class ServiceListActivity extends Activity {
         return jsonResource.execute();
     }
 
-    private Intent createIntent(Class usableClass, ArrayList<MapItem> mapItems) {
-        String intentType = usableClass != BusStopSource.class ? Constants.INTENT_TYPE_DEFAULT : Constants.INTENT_TYPE_BUS;
+    private Intent createIntentAndPopulateItems(Class usableClass, ArrayList<MapItem> mapItems) {
+        String intentType = usableClass != BusLocationSource.class ? Constants.INTENT_TYPE_DEFAULT : Constants.INTENT_TYPE_BUS;
 
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         intent.putExtra("intentType", intentType);
-        intent.putExtra("mapItems", mapItems);
+
+        //Populate the mapItems to be accessed xplatform (not in the intent anymore, too big sometimes)
+        MapItemsData.getInstance().setMapItems(mapItems);
 
         return intent;
     }
@@ -91,7 +96,7 @@ public class ServiceListActivity extends Activity {
             if (usableClass != null) {
 
                 ArrayList<MapItem> mapItems = (ArrayList<MapItem>) getMapItems(position);
-                Intent intent = createIntent(usableClass, mapItems);
+                Intent intent = createIntentAndPopulateItems(usableClass, mapItems);
 
                 startActivity(intent);
             } else {
@@ -136,10 +141,14 @@ public class ServiceListActivity extends Activity {
         BusStopSource busSource = new BusStopSource(ServiceListActivity.this, null);
         dataBaseHelper.insertBusStops(busSource.getBusStops());
 
+        //TODO: Show a message like the one we use when no resource available
         if (dataBaseHelper.getAllBusStops().size() != 0) {
             Log.v(TAG, "DataBase bus stops fillup ✓");
+            Toast.makeText(ServiceListActivity.this, "WARNING: DataBase bus stops fillup, they won't be shown ", Toast.LENGTH_LONG).show();
         } else {
-            Log.v(TAG, "DataBase bus stops fillup x");
+            String message = "DataBase bus stops fillup x";
+            Toast.makeText(ServiceListActivity.this, "WARNING: DataBase bus stops fillup, they won't be shown ", Toast.LENGTH_LONG).show();
+            Log.v(TAG, message);
         }
     }
 

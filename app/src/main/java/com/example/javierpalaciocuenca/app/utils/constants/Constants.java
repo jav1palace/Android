@@ -9,8 +9,14 @@ public class Constants {
     public static final String JSON_OIL_ARRAY_NAME_PLURAL = "contenedoraceites";
     public static final String JSON_CLOTHES_ARRAY_NAME_PLURAL = "contenedorropas";
     public static final String JSON_BUS_STOPS_NAME_PLURAL = "puntosTrayectos";
+    public static final String JSON_BUS_LOCATION_NAME_PLURAL = "posiciones";
 
+
+    public static final String JSON_DEFAULT_ARRAY_NAME_SINGULAR = "directorio";
+    public static final String JSON_OIL_ARRAY_NAME_SINGULAR = "contenedoraceite";
+    public static final String JSON_CLOTHES_ARRAY_NAME_SINGULAR = "contenedorropa";
     public static final String JSON_BUS_STOPS_NAME_SINGULAR = "puntoTrayecto";
+    public static final String JSON_BUS_LOCATION_NAME_SINGULAR = "posicion";
 
     public static final String INTENT_TYPE_BUS = "bus";
     public static final String INTENT_TYPE_DEFAULT = "default";

@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.javierpalaciocuenca.app.persistence.model.MapItem;
-import com.example.javierpalaciocuenca.app.resources.impl.BusStopSource;
 import com.example.javierpalaciocuenca.app.ui.activities.utils.ActivityStatus;
 import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
+import com.example.javierpalaciocuenca.app.utils.MapItemsData;
 import com.example.javierpalaciocuenca.app.utils.constants.Constants;
 import com.example.javierpalaciocuenca.myapplication.R;
 import com.google.android.gms.appindexing.Action;
@@ -80,10 +80,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         initDataStructuresAndClient();
     }
 
-    private void receiveIntent() {
+    private void receiveIntentAndSetMapItems() {
         Intent intent = getIntent();
         this.intentType = intent.getStringExtra("intentType");
-        this.mapItems = intent.getParcelableArrayListExtra("mapItems");
+
+        //Set mapItems locally to be used
+        this.mapItems = (ArrayList<MapItem>) MapItemsData.getInstance().getMapItems();
     }
 
     @Override
@@ -91,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
 
         init();
-        receiveIntent();
+        receiveIntentAndSetMapItems();
     }
 
     private MarkerOptions createMarkerOptions(MapItem mapItem) {
@@ -139,20 +141,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void fetchDataWhenNeeded(LatLngBounds.Builder builder) throws InterruptedException {
-        if (this.intentType.equals(Constants.INTENT_TYPE_BUS)) {
-            //FETCHING EVERY X SECONDS
-            BusStopSource busSource = new BusStopSource();
-
-            while (ActivityStatus.isActivityVisible()) {
-                this.mapItems = (ArrayList<MapItem>) busSource.execute();
-                createMarkers(builder);
-                centerBounds(builder);
-                Thread.sleep(Constants.BUS_FETCHING_TIME);
-            }
-        }
-    }
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -171,7 +159,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             createMarkers(builder);
             centerBounds(builder);
-            fetchDataWhenNeeded(builder);
 
         } catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();
@@ -209,7 +196,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onStop() {
         super.onStop();
         ActivityStatus.activityPaused();
-
+        cleanMarkers();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
@@ -226,5 +213,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onPause() {
         super.onPause();
         ActivityStatus.activityPaused();
+        cleanMarkers();
     }
 }

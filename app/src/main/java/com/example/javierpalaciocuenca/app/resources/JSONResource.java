@@ -4,13 +4,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.javierpalaciocuenca.app.persistence.model.BusStop;
+import com.example.javierpalaciocuenca.app.persistence.model.MapItem;
+import com.example.javierpalaciocuenca.app.resources.utils.JSONReader;
 import com.example.javierpalaciocuenca.app.resources.utils.JSONResourceUtils;
 import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
-import com.example.javierpalaciocuenca.myapplication.R;
-import com.example.javierpalaciocuenca.app.persistence.model.MapItem;
 import com.example.javierpalaciocuenca.app.utils.constants.Constants;
-import com.example.javierpalaciocuenca.app.resources.utils.JSONReader;
 import com.example.javierpalaciocuenca.app.utils.constants.URLConstants;
+import com.example.javierpalaciocuenca.myapplication.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,14 +32,23 @@ public abstract class JSONResource {
     protected Integer icon = R.drawable.default_icon;
     protected Integer marker = R.drawable.default_marker;
     protected String URL = URLConstants.DEFAULT_SOURCE_URL;
-    protected String key = Constants.JSON_DEFAULT_ARRAY_NAME_PLURAL;
+    protected String pluralKey = Constants.JSON_DEFAULT_ARRAY_NAME_PLURAL;
+    protected String singularKey = Constants.JSON_DEFAULT_ARRAY_NAME_SINGULAR;
 
-    protected String getKey() {
-        return key;
+    protected String getPluralKey() {
+        return pluralKey;
     }
 
-    protected void setKey(String key) {
-        this.key = key;
+    protected void setPluralKey(String pluralKey) {
+        this.pluralKey = pluralKey;
+    }
+
+    protected String getSingularKey() {
+        return singularKey;
+    }
+
+    protected void setSingularKey(String singularKey) {
+        this.singularKey = singularKey;
     }
 
     Context getContext() {
@@ -57,7 +67,7 @@ public abstract class JSONResource {
         this.icon = icon;
     }
 
-    Integer getMarker() {
+    public Integer getMarker() {
         return marker;
     }
 
@@ -82,7 +92,6 @@ public abstract class JSONResource {
     }
 
     public List<MapItem> execute() {
-
         JSONObject jsonObject;
         List<MapItem> mapItems = new ArrayList<>();
 
@@ -92,7 +101,7 @@ public abstract class JSONResource {
                 AsyncTask<String, Void, JSONObject> asyncTask = new JSONReader(getContext(), getProgressDialog()).execute(getURL());
                 jsonObject = asyncTask.get();
 
-                mapItems = JSONResourceUtils.getMapItems(jsonObject, getKey(), getMarker());
+                mapItems = JSONResourceUtils.getMapItems(jsonObject, getPluralKey(), getSingularKey(), getMarker());
             } catch (InterruptedException e) {
                 ExceptionDialogBuilder.createExceptionDialog(getContext(), e.getMessage()).show();
             } catch (ExecutionException e) {

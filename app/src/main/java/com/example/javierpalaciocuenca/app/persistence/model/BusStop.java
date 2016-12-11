@@ -1,12 +1,13 @@
 package com.example.javierpalaciocuenca.app.persistence.model;
 
+import android.os.Parcelable;
+
 /**
  * Created by javierpalaciocuenca on 08/12/2016.
  */
 
 public class BusStop {
-
-    private int id, orden, idlinea, idtrayecto;
+    private int id, orden, idLinea, idTrayecto;
     private double utmx, utmy;
 
     public BusStop() {
@@ -15,8 +16,8 @@ public class BusStop {
     public BusStop(int id, int orden, int idlinea, int idtrayecto, double utmx, double utmy) {
         this.id = id;
         this.orden = orden;
-        this.idlinea = idlinea;
-        this.idtrayecto = idtrayecto;
+        this.idLinea = idlinea;
+        this.idTrayecto = idtrayecto;
         this.utmx = utmx;
         this.utmy = utmy;
     }
@@ -37,20 +38,20 @@ public class BusStop {
         this.orden = orden;
     }
 
-    public int getIdlinea() {
-        return idlinea;
+    public int getIdLinea() {
+        return idLinea;
     }
 
-    public void setIdlinea(int idlinea) {
-        this.idlinea = idlinea;
+    public void setIdLinea(int idLinea) {
+        this.idLinea = idLinea;
     }
 
-    public int getIdtrayecto() {
-        return idtrayecto;
+    public int getIdTrayecto() {
+        return idTrayecto;
     }
 
-    public void setIdtrayecto(int idtrayecto) {
-        this.idtrayecto = idtrayecto;
+    public void setIdTrayecto(int idTrayecto) {
+        this.idTrayecto = idTrayecto;
     }
 
     public double getUtmy() {
@@ -69,5 +70,6 @@ public class BusStop {
         this.utmx = utmx;
     }
 }
+
 
 
