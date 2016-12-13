@@ -3,11 +3,13 @@ package com.example.javierpalaciocuenca.app.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.javierpalaciocuenca.app.persistence.model.MapItem;
+import com.example.javierpalaciocuenca.app.resources.impl.BusLocationSource;
 import com.example.javierpalaciocuenca.app.ui.activities.utils.ActivityStatus;
 import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.app.utils.MapItemsData;
@@ -40,6 +42,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Marker> markers;
     private ArrayList<MapItem> mapItems;
     private String intentType;
+    private Handler mHandler;
+    private LatLngBounds.Builder builder;
+
+    private Runnable busLive = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                fetchDataWhenNeeded(); //this function can change value of mInterval.
+            } catch (InterruptedException e) {
+                ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();
+            } finally {
+                mHandler.postDelayed(busLive, Constants.BUS_FETCHING_TIME);
+            }
+        }
+    };
+
+    private void fetchDataWhenNeeded() throws InterruptedException {
+        BusLocationSource busSource = new BusLocationSource();
+
+        this.mapItems = (ArrayList<MapItem>) busSource.execute();
+        cleanMarkers();
+        createMarkers();
+    }
+
+    private void initBusLive() {
+        if (this.intentType.equals(Constants.INTENT_TYPE_BUS)) {
+            this.busLive.run();
+        }
+    }
 
     private void initMap() {
         setContentView(R.layout.activity_maps);
@@ -68,16 +99,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void initDataStructuresAndClient() {
+    private void initDataStructuresHandlerBuilderAndClient() {
         this.markers = new ArrayList<>();
         this.mapItems = new ArrayList<>();
         this.client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        this.mHandler = new Handler();
+        this.builder = new LatLngBounds.Builder();
     }
 
     private void init() {
         initMap();
         initResetButton();
-        initDataStructuresAndClient();
+        initDataStructuresHandlerBuilderAndClient();
     }
 
     private void receiveIntentAndSetMapItems() {
@@ -115,7 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return markerOptions;
     }
 
-    private void createMarkers(LatLngBounds.Builder builder) {
+    private void createMarkers() {
         MarkerOptions markerOptions;
 
         for (MapItem mapItem : this.mapItems) {
@@ -123,21 +156,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             if (markerOptions != null) {
                 this.markers.add(this.mMap.addMarker(markerOptions));
-                builder.include(mapItem.getLatLng()); //Include mapItem in the bounds
+                this.builder.include(mapItem.getLatLng()); //Include mapItem in the bounds
             }
         }
     }
 
-    private void centerBounds(LatLngBounds.Builder builder) {
+    private void centerBounds() {
         /* Move the camera to take all the markers in case there's any */
         if (this.markers.size() > 0) {
-            LatLngBounds bounds = builder.build();
+            LatLngBounds bounds = this.builder.build();
             int width = getResources().getDisplayMetrics().widthPixels;
             int height = getResources().getDisplayMetrics().heightPixels;
             int padding = (int) (width * Constants.MAP_ACTIVITY_BOUNDS_OFFSET);
 
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding); //offset from edges of the map in pixels
             this.mMap.moveCamera(cu);
+        }
+    }
+
+    private void stopActivity() {
+        ActivityStatus.activityPaused();
+        cleanMarkers();
+
+        if (this.intentType.equals(Constants.INTENT_TYPE_BUS)) {
+            mHandler.removeCallbacks(busLive); // Stop repeating busLive
         }
     }
 
@@ -155,10 +197,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.mMap = googleMap;
 
         try {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            createMarkers(builder);
-            centerBounds(builder);
+            createMarkers();
+            centerBounds();
+            initBusLive();
 
         } catch (Exception e) {
             ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();
@@ -195,8 +236,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onStop() {
         super.onStop();
-        ActivityStatus.activityPaused();
-        cleanMarkers();
+        stopActivity();
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
@@ -212,7 +253,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onPause() {
         super.onPause();
-        ActivityStatus.activityPaused();
-        cleanMarkers();
+        stopActivity();
     }
 }
