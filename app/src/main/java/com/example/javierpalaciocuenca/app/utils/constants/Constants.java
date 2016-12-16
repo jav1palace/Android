@@ -24,4 +24,5 @@ public class Constants {
     public static final double MAP_ACTIVITY_BOUNDS_OFFSET = 0.12; //offset from edges of the map 12% of screen
 
     public static final long BUS_FETCHING_TIME = 10000; //10 seconds between fetches
+    public static final long BUS_STOP_BLINKING_TIME = 500; //0.5 seconds blinking bus stop
 }

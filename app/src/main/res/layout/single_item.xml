@@ -11,9 +11,11 @@
 
         <TextView
             android:id="@+id/txt"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="50dp" />
+            android:textSize="30dp"
+            android:layout_height="55dp" />
         <!--TODO:show the categories below-->
     </TableRow>
 </TableLayout>

@@ -125,27 +125,57 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<BusStop> getAllBusStops() {
-        List<BusStop> busStops = new ArrayList<>();
+    private BusStop getBusStopFromCursor(Cursor cursor){
+        BusStop busStop = new BusStop();
+        busStop.setId(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ID)));
+        busStop.setOrden(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ORDEN)));
+        busStop.setIdLinea(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_LINEA)));
+        busStop.setIdTrayecto(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_TRAYECTO)));
+        busStop.setUtmx(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMX)));
+        busStop.setUtmy(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMY)));
+        busStop.setBusStop(false);
 
-        String POSTS_SELECT_QUERY = String.format("SELECT * FROM %s", DataBaseConstants.TABLE_BUS_STOP);
+        return busStop;
+    }
+
+    public BusStop getBusStop(int orden, int idLinea, int idTrayecto){
+        String POSTS_SELECT_QUERY = String.format("SELECT * FROM %s WHERE idtrayecto=%d AND idLinea=%d AND orden=%d",
+                DataBaseConstants.TABLE_BUS_STOP,
+                idTrayecto,
+                idLinea,
+                orden
+        );
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(POSTS_SELECT_QUERY, null);
         try {
             if (cursor.moveToFirst()) {
-                BusStop busStop;
+                return getBusStopFromCursor(cursor);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Error while getting bus stop x");
+            ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                Log.v(TAG, "1 bus stops was retrieved ✓");
+                cursor.close();
+            }
+        }
 
+        return null;
+    }
+
+    public List<BusStop> getAllBusStops() {
+        List<BusStop> busStops = new ArrayList<>();
+
+        String POSTS_SELECT_QUERY = String.format("SELECT * FROM %s", DataBaseConstants.TABLE_BUS_STOP);
+
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(POSTS_SELECT_QUERY, null);
+        try {
+            if (cursor.moveToFirst()) {
                 do {
-                    busStop = new BusStop();
-                    busStop.setId(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ID)));
-                    busStop.setOrden(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_ORDEN)));
-                    busStop.setIdLinea(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_LINEA)));
-                    busStop.setIdTrayecto(cursor.getInt(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_TRAYECTO)));
-                    busStop.setUtmx(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMX)));
-                    busStop.setUtmy(cursor.getDouble(cursor.getColumnIndex(DataBaseConstants.KEY_BUS_STOP_UTMY)));
-
-                    busStops.add(busStop);
+                    busStops.add(getBusStopFromCursor(cursor));
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {

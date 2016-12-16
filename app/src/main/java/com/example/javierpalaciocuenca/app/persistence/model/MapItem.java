@@ -25,9 +25,10 @@ public class MapItem implements Parcelable {
     private LatLng latLng;
     private String title, url;
     private Integer marker;
+    private BusStop busStop;
 
     public MapItem() {
-
+        busStop = null;
     }
 
     public MapItem(String title, LatLng latLng){
@@ -56,6 +57,14 @@ public class MapItem implements Parcelable {
         if (latitude != 0 && longitude != 0) {
             this.latLng = new LatLng(latitude, longitude);
         }
+    }
+
+    public BusStop getBusStop() {
+        return busStop;
+    }
+
+    public void setBusStop(BusStop busStop) {
+        this.busStop = busStop;
     }
 
     public LatLng getLatLng() {

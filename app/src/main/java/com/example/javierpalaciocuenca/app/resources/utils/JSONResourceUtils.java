@@ -96,6 +96,7 @@ public class JSONResourceUtils {
             utmy = jsonObject.getDouble("utmy");
 
             busStops.add(new BusStop(0, orden, idLinea, idTrayecto, utmx, utmy));
+
         }
 
         return busStops;
@@ -164,16 +165,40 @@ public class JSONResourceUtils {
         return new LatLng(latitude, longitude);
     }
 
-    //TODO: CHANGE BASIC MARKER FOR A CUSTOM MARKER DEPENDING ON THE Nº DE LINEA
-    public static List<MapItem> createMapItemsFromBusStops(List<BusStop> busStops, Integer marker) {
+    public static List<MapItem> createMapItemsFromBusStops(List<BusStop> busStops, Integer marker, boolean isBusStop) {
         List<MapItem> mapItems = new ArrayList<>();
+        MapItem mapItem;
+        String title;
         for (BusStop busStop : busStops) {
             LatLng latLng = createLatLngFromUTM(busStop.getUtmx(), busStop.getUtmy());
             if (latLng != null) {
-                mapItems.add(new MapItem(String.valueOf(busStop.getIdLinea()), latLng, marker));
+                title = String.valueOf(busStop.getIdLinea());
+                title = isBusStop ? "P" + title : title;
+                mapItem = new MapItem(title, latLng, marker);
+                mapItem.setBusStop(busStop);
+                mapItems.add(mapItem);
             }
         }
 
         return mapItems;
+    }
+
+    //TODO: CHANGE BASIC MARKER FOR A CUSTOM MARKER DEPENDING ON THE Nº DE LINEA
+    public static List<MapItem> createMapItemsFromBusStops(List<BusStop> busStops, Integer marker) {
+        return createMapItemsFromBusStops(busStops, marker, false);
+    }
+
+    public static List<BusStop> createPreviousAndNextBusStop(List<BusStop> busStops, Context context) {
+        MyDataBaseHelper dbHelper = MyDataBaseHelper.getInstance(context);
+        ArrayList<BusStop> busStopsReturn = new ArrayList<>();
+        BusStop busStopToAdd;
+        for (BusStop busStop : busStops) {
+            busStopToAdd = dbHelper.getBusStop(busStop.getOrden(), busStop.getIdLinea(), busStop.getIdTrayecto());
+            if (busStopToAdd != null) {
+                busStopsReturn.add(busStopToAdd);
+            }
+        }
+
+        return busStopsReturn;
     }
 }

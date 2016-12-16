@@ -13,6 +13,7 @@ import com.example.javierpalaciocuenca.app.resources.utils.JSONResourceUtils;
 import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.app.utils.constants.Constants;
 import com.example.javierpalaciocuenca.app.utils.constants.URLConstants;
+import com.example.javierpalaciocuenca.myapplication.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,8 @@ public class BusStopSource extends JSONResource {
         setURL(URLConstants.BUS_STOP_SOURCE_URL);
         setPluralKey(Constants.JSON_BUS_STOPS_NAME_PLURAL);
         setSingularKey(Constants.JSON_BUS_STOPS_NAME_SINGULAR);
+        setMarker(R.drawable.busstop_marker);
+        setIcon(R.drawable.busstop_icon);
     }
 
     public BusStopSource(Context context, ProgressDialog progressDialog) {

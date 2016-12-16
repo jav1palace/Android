@@ -12,6 +12,8 @@ import com.example.javierpalaciocuenca.app.resources.utils.JSONResourceUtils;
 import com.example.javierpalaciocuenca.app.utils.ExceptionDialogBuilder;
 import com.example.javierpalaciocuenca.app.utils.constants.Constants;
 import com.example.javierpalaciocuenca.app.utils.constants.URLConstants;
+import com.example.javierpalaciocuenca.myapplication.R;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,12 +33,39 @@ public class BusLocationSource extends JSONResource {
         setURL(URLConstants.BUS_LOCATION_SOURCE_URL);
         setPluralKey(Constants.JSON_BUS_LOCATION_NAME_PLURAL);
         setSingularKey(Constants.JSON_BUS_LOCATION_NAME_SINGULAR);
+        setMarker(R.drawable.buslocation_marker);
+        setIcon(R.drawable.buslocation_icon);
     }
 
     public BusLocationSource(Context context, ProgressDialog progressDialog) {
         this();
         this.context = context;
         this.progressDialog = progressDialog;
+    }
+
+    private boolean isBusHome(MapItem mapItem) {
+        LatLng latLng = mapItem.getLatLng();
+        return latLng.latitude > 43.531297 && latLng.longitude > -5.704565 &&
+                latLng.latitude < 43.535175 && latLng.longitude < -5.699263;
+    }
+
+    private List<MapItem> clearBusesHome(List<MapItem> mapItems) {
+        ArrayList<MapItem> mapItemsReturn = new ArrayList<>();
+        for (MapItem mapItem : mapItems) {
+            if (!isBusHome(mapItem)) {
+                mapItemsReturn.add(mapItem);
+            }
+        }
+        return mapItemsReturn;
+    }
+
+    private List<BusStop> geBusStopsFromMapItems(List<MapItem> mapItems) {
+        ArrayList<BusStop> busStops = new ArrayList<>();
+        for (MapItem mapItem : mapItems) {
+            busStops.add(mapItem.getBusStop());
+        }
+
+        return busStops;
     }
 
     public BusLocationSource(Context context) {
@@ -55,8 +84,12 @@ public class BusLocationSource extends JSONResource {
                 jsonObject = asyncTask.get();
 
                 List<BusStop> latestBusStops = JSONResourceUtils.getBusStops(jsonObject, getPluralKey(), getSingularKey());
-
                 mapItems = JSONResourceUtils.createMapItemsFromBusStops(latestBusStops, getMarker());
+                mapItems = clearBusesHome(mapItems);
+                latestBusStops = geBusStopsFromMapItems(mapItems);
+
+                mapItems.addAll(JSONResourceUtils.createMapItemsFromBusStops(
+                        JSONResourceUtils.createPreviousAndNextBusStop(latestBusStops, context), new BusStopSource().getMarker(), true));
 
             } catch (InterruptedException e) {
                 ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();

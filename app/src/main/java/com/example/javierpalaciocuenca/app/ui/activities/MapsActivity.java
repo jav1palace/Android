@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -49,7 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void run() {
             try {
-                fetchDataWhenNeeded(); //this function can change value of mInterval.
+                fetchBusData(); //fetching bus information
             } catch (InterruptedException e) {
                 ExceptionDialogBuilder.createExceptionDialog(MapsActivity.this, e.getMessage()).show();
             } finally {
@@ -58,17 +59,76 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
-    private void fetchDataWhenNeeded() throws InterruptedException {
+    private Runnable blinkBusStops = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                for (Marker marker : markers) {
+                    if (marker.getTitle().contains("P")) {
+                        marker.setVisible(!marker.isVisible());
+                    }
+                }
+            } finally {
+                mHandler.postDelayed(blinkBusStops, Constants.BUS_STOP_BLINKING_TIME);
+            }
+        }
+    };
+
+    private boolean isSameLatLng(LatLng latLng, LatLng latLng2) {
+        return latLng.latitude == latLng2.latitude &&
+                latLng.longitude == latLng2.longitude;
+    }
+
+    private boolean isMarkerPresent(Marker marker) {
+        for (MapItem mapItem : mapItems) {
+            if (isSameLatLng(mapItem.getLatLng(), marker.getPosition())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void consolidateMarkers() {
+        for (Marker marker : markers) {
+            if (!isMarkerPresent(marker)) {
+                marker.remove();
+            }
+        }
+    }
+
+    private boolean isMapItemPresent(MapItem mapItem) {
+        for (Marker marker : markers) {
+            if (isSameLatLng(mapItem.getLatLng(), marker.getPosition())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void createNewMarkers() {
+        for (MapItem mapItem : mapItems) {
+            if (!isMapItemPresent(mapItem)) {
+                createSingleMarker(mapItem);
+            }
+        }
+    }
+
+
+    private void fetchBusData() throws InterruptedException {
         BusLocationSource busSource = new BusLocationSource();
 
         this.mapItems = (ArrayList<MapItem>) busSource.execute();
-        cleanMarkers();
-        createMarkers();
+        //TODO: Update only the ones changing location
+        consolidateMarkers();
+        createNewMarkers();
     }
 
     private void initBusLive() {
         if (this.intentType.equals(Constants.INTENT_TYPE_BUS)) {
             this.busLive.run();
+            this.blinkBusStops.run();
         }
     }
 
@@ -133,10 +193,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerOptions = null;
 
         if (mapItem.getLatLng() != null) {
-
             markerOptions = new MarkerOptions();
-            markerOptions.position(mapItem.getLatLng());
             markerOptions.title(mapItem.getTitle());
+            markerOptions.position(mapItem.getLatLng());
             markerOptions.icon(BitmapDescriptorFactory.fromResource(mapItem.getMarker()));
 
             if (mapItem.getUrl() != null) {
@@ -148,16 +207,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return markerOptions;
     }
 
+    private void createSingleMarker(MapItem mapItem) {
+        MarkerOptions markerOptions = createMarkerOptions(mapItem);
+
+        if (markerOptions != null) {
+            this.markers.add(this.mMap.addMarker(markerOptions));
+            this.builder.include(markerOptions.getPosition()); //Include mapItem in the bounds
+        }
+    }
+
     private void createMarkers() {
-        MarkerOptions markerOptions;
-
         for (MapItem mapItem : this.mapItems) {
-            markerOptions = createMarkerOptions(mapItem);
-
-            if (markerOptions != null) {
-                this.markers.add(this.mMap.addMarker(markerOptions));
-                this.builder.include(mapItem.getLatLng()); //Include mapItem in the bounds
-            }
+            createSingleMarker(mapItem);
         }
     }
 

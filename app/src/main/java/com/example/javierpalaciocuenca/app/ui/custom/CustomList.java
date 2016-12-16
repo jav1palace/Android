@@ -56,7 +56,7 @@ public class CustomList extends ArrayAdapter<String>{
             }
 
             TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-            txtTitle.setText(this.items.get(position));
+            txtTitle.setText(this.items.get(position).toUpperCase());
 
         } catch (InstantiationException e) {
             ExceptionDialogBuilder.createExceptionDialog(this.context, e.getMessage()).show();

@@ -1,7 +1,5 @@
 package com.example.javierpalaciocuenca.app.persistence.model;
 
-import android.os.Parcelable;
-
 /**
  * Created by javierpalaciocuenca on 08/12/2016.
  */
@@ -9,17 +7,28 @@ import android.os.Parcelable;
 public class BusStop {
     private int id, orden, idLinea, idTrayecto;
     private double utmx, utmy;
+    private boolean isBusStop;
 
     public BusStop() {
+        isBusStop = true;
     }
 
     public BusStop(int id, int orden, int idlinea, int idtrayecto, double utmx, double utmy) {
+        this();
         this.id = id;
         this.orden = orden;
         this.idLinea = idlinea;
         this.idTrayecto = idtrayecto;
         this.utmx = utmx;
         this.utmy = utmy;
+    }
+
+    public boolean isBusStop() {
+        return isBusStop;
+    }
+
+    public void setBusStop(boolean busStop) {
+        isBusStop = busStop;
     }
 
     public int getId() {
