@@ -20,8 +20,8 @@ android:
     - addon-google_apis-google-19
 
     # Specify at least one system image,
-    # if you need to run emulator(s) during your tests
-  licenses:
+    # if you need to run emulator(s) during your test
+licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
