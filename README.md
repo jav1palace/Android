@@ -2,7 +2,7 @@
 
 This is a collaborative project to extend the data currently offered in the app from Gijon city's catalogue.
 
-As Gijon's city council does not offer an online service to retrieve their catalogue, every single resource has to be implemented manually. In order to make the implementation of different resources as intuitive as posible, the app has an architecture base in the <b><i>strategy</i></b> design pattern. 
+As Gijon's city council does not offer an online service to retrieve their catalogue, every single resource has to be implemented manually. In order to make the implementation of different resources as intuitive as posible, the app has an architecture adapted to this matter. 
 
 There is a basic implementation that can be applied for most of the JSON resources currently offered. 
 
